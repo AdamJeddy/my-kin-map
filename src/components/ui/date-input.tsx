@@ -21,7 +21,7 @@ const MONTH_SHORT = [
   'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'
 ];
 
-export function DateInput({ value = '', onChange, placeholder, className }: DateInputProps) {
+export function DateInput({ value = '', onChange, className }: DateInputProps) {
   // Parse existing value to determine precision and parts
   const parseDate = (dateStr: string): { precision: DatePrecision; year: string; month: string; day: string } => {
     if (!dateStr) return { precision: 'full', year: '', month: '', day: '' };
@@ -135,6 +135,8 @@ export function DateInput({ value = '', onChange, placeholder, className }: Date
     setDay(newDay);
     updateValue(precision, year, month, newDay);
   }, [precision, year, month, updateValue]);
+
+  const currentYear = new Date().getFullYear();
 
   return (
     <div className={cn("space-y-2", className)}>

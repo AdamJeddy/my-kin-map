@@ -186,7 +186,6 @@ export function PersonForm({ person, onSubmit, onCancel, isSubmitting }: PersonF
           <DateInput
             value={formData.birthDate}
             onChange={(value) => handleChange('birthDate', value)}
-            placeholder="Birth date"
           />
           <Input
             value={formData.birthPlace}
@@ -203,7 +202,6 @@ export function PersonForm({ person, onSubmit, onCancel, isSubmitting }: PersonF
           <DateInput
             value={formData.deathDate}
             onChange={(value) => handleChange('deathDate', value)}
-            placeholder="Death date"
           />
           <Input
             value={formData.deathPlace}
