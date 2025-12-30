@@ -13,6 +13,7 @@ import {
   Avatar,
   AvatarFallback,
   AvatarImage,
+  DateInput,
 } from '@/components/ui';
 import type { Person, PersonFormData, Sex } from '@/types';
 
@@ -181,11 +182,11 @@ export function PersonForm({ person, onSubmit, onCancel, isSubmitting }: PersonF
       {/* Birth info */}
       <div className="space-y-2">
         <Label>Birth</Label>
-        <div className="grid grid-cols-2 gap-3">
-          <Input
+        <div className="space-y-3">
+          <DateInput
             value={formData.birthDate}
-            onChange={(e) => handleChange('birthDate', e.target.value)}
-            placeholder="Date (e.g., 1985 or Mar 15, 1985)"
+            onChange={(value) => handleChange('birthDate', value)}
+            placeholder="Birth date"
           />
           <Input
             value={formData.birthPlace}
@@ -198,11 +199,11 @@ export function PersonForm({ person, onSubmit, onCancel, isSubmitting }: PersonF
       {/* Death info */}
       <div className="space-y-2">
         <Label>Death (if applicable)</Label>
-        <div className="grid grid-cols-2 gap-3">
-          <Input
+        <div className="space-y-3">
+          <DateInput
             value={formData.deathDate}
-            onChange={(e) => handleChange('deathDate', e.target.value)}
-            placeholder="Date"
+            onChange={(value) => handleChange('deathDate', value)}
+            placeholder="Death date"
           />
           <Input
             value={formData.deathPlace}
