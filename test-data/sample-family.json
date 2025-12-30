@@ -118,35 +118,6 @@
       "notes": "Daughter-in-law"
     },
     {
-      "id": "person-009",
-      "_rev": "rev-009",
-      "createdAt": "2025-01-01T00:00:00.000Z",
-      "updatedAt": "2025-01-01T00:00:00.000Z",
-      "givenNames": "Christopher",
-      "surname": "Smith",
-      "sex": "M",
-      "birth": {
-        "date": "1976-07-03",
-        "place": "Boston, MA"
-      },
-      "notes": "Son"
-    },
-    {
-      "id": "person-010",
-      "_rev": "rev-010",
-      "createdAt": "2025-01-01T00:00:00.000Z",
-      "updatedAt": "2025-01-01T00:00:00.000Z",
-      "givenNames": "Patricia",
-      "surname": "Smith",
-      "birthName": "Anderson",
-      "sex": "F",
-      "birth": {
-        "date": "1978-09-19",
-        "place": "Seattle, WA"
-      },
-      "notes": "Daughter-in-law"
-    },
-    {
       "id": "person-011",
       "_rev": "rev-011",
       "createdAt": "2025-01-01T00:00:00.000Z",
@@ -189,62 +160,6 @@
       "notes": "Grandson"
     },
     {
-      "id": "person-014",
-      "_rev": "rev-014",
-      "createdAt": "2025-01-01T00:00:00.000Z",
-      "updatedAt": "2025-01-01T00:00:00.000Z",
-      "givenNames": "Sophia",
-      "surname": "Smith",
-      "sex": "F",
-      "birth": {
-        "date": "2013-06-17",
-        "place": "Chicago, IL"
-      },
-      "notes": "Granddaughter"
-    },
-    {
-      "id": "person-015",
-      "_rev": "rev-015",
-      "createdAt": "2025-01-01T00:00:00.000Z",
-      "updatedAt": "2025-01-01T00:00:00.000Z",
-      "givenNames": "Victoria",
-      "surname": "Smith",
-      "sex": "F",
-      "birth": {
-        "date": "2014-03-22",
-        "place": "Chicago, IL"
-      },
-      "notes": "Granddaughter"
-    },
-    {
-      "id": "person-016",
-      "_rev": "rev-016",
-      "createdAt": "2025-01-01T00:00:00.000Z",
-      "updatedAt": "2025-01-01T00:00:00.000Z",
-      "givenNames": "Grace",
-      "surname": "Smith",
-      "sex": "F",
-      "birth": {
-        "date": "2015-09-12",
-        "place": "Chicago, IL"
-      },
-      "notes": "Granddaughter"
-    },
-    {
-      "id": "person-017",
-      "_rev": "rev-017",
-      "createdAt": "2025-01-01T00:00:00.000Z",
-      "updatedAt": "2025-01-01T00:00:00.000Z",
-      "givenNames": "Ava",
-      "surname": "Smith",
-      "sex": "F",
-      "birth": {
-        "date": "2018-07-14",
-        "place": "Chicago, IL"
-      },
-      "notes": "Granddaughter"
-    },
-    {
       "id": "person-018",
       "_rev": "rev-018",
       "createdAt": "2025-01-01T00:00:00.000Z",
@@ -282,62 +197,6 @@
       "sex": "F",
       "birth": {
         "date": "2014-11-06",
-        "place": "Denver, CO"
-      },
-      "notes": "Granddaughter"
-    },
-    {
-      "id": "person-021",
-      "_rev": "rev-021",
-      "createdAt": "2025-01-01T00:00:00.000Z",
-      "updatedAt": "2025-01-01T00:00:00.000Z",
-      "givenNames": "Alexander",
-      "surname": "Brown",
-      "sex": "M",
-      "birth": {
-        "date": "2016-02-14",
-        "place": "Denver, CO"
-      },
-      "notes": "Grandson"
-    },
-    {
-      "id": "person-022",
-      "_rev": "rev-022",
-      "createdAt": "2025-01-01T00:00:00.000Z",
-      "updatedAt": "2025-01-01T00:00:00.000Z",
-      "givenNames": "William",
-      "surname": "Brown",
-      "sex": "M",
-      "birth": {
-        "date": "2018-11-22",
-        "place": "Denver, CO"
-      },
-      "notes": "Grandson"
-    },
-    {
-      "id": "person-023",
-      "_rev": "rev-023",
-      "createdAt": "2025-01-01T00:00:00.000Z",
-      "updatedAt": "2025-01-01T00:00:00.000Z",
-      "givenNames": "Oliver",
-      "surname": "Brown",
-      "sex": "M",
-      "birth": {
-        "date": "2019-03-25",
-        "place": "Denver, CO"
-      },
-      "notes": "Grandson"
-    },
-    {
-      "id": "person-024",
-      "_rev": "rev-024",
-      "createdAt": "2025-01-01T00:00:00.000Z",
-      "updatedAt": "2025-01-01T00:00:00.000Z",
-      "givenNames": "Abigail",
-      "surname": "Brown",
-      "sex": "F",
-      "birth": {
-        "date": "2020-10-30",
         "place": "Denver, CO"
       },
       "notes": "Granddaughter"
@@ -383,217 +242,6 @@
         "place": "Houston, TX"
       },
       "notes": "Grandson"
-    },
-    {
-      "id": "person-028",
-      "_rev": "rev-028",
-      "createdAt": "2025-01-01T00:00:00.000Z",
-      "updatedAt": "2025-01-01T00:00:00.000Z",
-      "givenNames": "Isabella",
-      "surname": "Smith",
-      "sex": "F",
-      "birth": {
-        "date": "2011-07-22",
-        "place": "Houston, TX"
-      },
-      "notes": "Granddaughter"
-    },
-    {
-      "id": "person-029",
-      "_rev": "rev-029",
-      "createdAt": "2025-01-01T00:00:00.000Z",
-      "updatedAt": "2025-01-01T00:00:00.000Z",
-      "givenNames": "Henry",
-      "surname": "Smith",
-      "sex": "M",
-      "birth": {
-        "date": "2017-04-30",
-        "place": "Houston, TX"
-      },
-      "notes": "Grandson"
-    },
-    {
-      "id": "person-030",
-      "_rev": "rev-030",
-      "createdAt": "2025-01-01T00:00:00.000Z",
-      "updatedAt": "2025-01-01T00:00:00.000Z",
-      "givenNames": "Ethan",
-      "surname": "Smith",
-      "sex": "M",
-      "birth": {
-        "date": "2019-02-20",
-        "place": "Houston, TX"
-      },
-      "notes": "Grandson"
-    },
-    {
-      "id": "person-031",
-      "_rev": "rev-031",
-      "createdAt": "2025-01-01T00:00:00.000Z",
-      "updatedAt": "2025-01-01T00:00:00.000Z",
-      "givenNames": "Daniel",
-      "surname": "Smith",
-      "sex": "M",
-      "birth": {
-        "date": "2004-02-25",
-        "place": "Seattle, WA"
-      },
-      "notes": "Grandson"
-    },
-    {
-      "id": "person-032",
-      "_rev": "rev-032",
-      "createdAt": "2025-01-01T00:00:00.000Z",
-      "updatedAt": "2025-01-01T00:00:00.000Z",
-      "givenNames": "Rachel",
-      "surname": "Smith",
-      "sex": "F",
-      "birth": {
-        "date": "2006-10-12",
-        "place": "Seattle, WA"
-      },
-      "notes": "Granddaughter"
-    },
-    {
-      "id": "person-033",
-      "_rev": "rev-033",
-      "createdAt": "2025-01-01T00:00:00.000Z",
-      "updatedAt": "2025-01-01T00:00:00.000Z",
-      "givenNames": "Jack",
-      "surname": "Smith",
-      "sex": "M",
-      "birth": {
-        "date": "2005-08-03",
-        "place": "Seattle, WA"
-      },
-      "notes": "Grandson"
-    },
-    {
-      "id": "person-034",
-      "_rev": "rev-034",
-      "createdAt": "2025-01-01T00:00:00.000Z",
-      "updatedAt": "2025-01-01T00:00:00.000Z",
-      "givenNames": "Ella",
-      "surname": "Smith",
-      "sex": "F",
-      "birth": {
-        "date": "2016-12-08",
-        "place": "Seattle, WA"
-      },
-      "notes": "Granddaughter"
-    },
-    {
-      "id": "person-035",
-      "_rev": "rev-035",
-      "createdAt": "2025-01-01T00:00:00.000Z",
-      "updatedAt": "2025-01-01T00:00:00.000Z",
-      "givenNames": "Katherine",
-      "surname": "Smith",
-      "sex": "F",
-      "birth": {
-        "date": "2008-06-30",
-        "place": "Boston, MA"
-      },
-      "notes": "Granddaughter"
-    },
-    {
-      "id": "person-036",
-      "_rev": "rev-036",
-      "createdAt": "2025-01-01T00:00:00.000Z",
-      "updatedAt": "2025-01-01T00:00:00.000Z",
-      "givenNames": "Paul",
-      "surname": "Taylor",
-      "sex": "M",
-      "birth": {
-        "date": "2006-01-12",
-        "place": "Portland, OR"
-      },
-      "notes": "Grandson-in-law"
-    },
-    {
-      "id": "person-037",
-      "_rev": "rev-037",
-      "createdAt": "2025-01-01T00:00:00.000Z",
-      "updatedAt": "2025-01-01T00:00:00.000Z",
-      "givenNames": "Sophie",
-      "surname": "Taylor",
-      "sex": "F",
-      "birth": {
-        "date": "2015-09-08",
-        "place": "Portland, OR"
-      },
-      "notes": "Great-granddaughter"
-    },
-    {
-      "id": "person-038",
-      "_rev": "rev-038",
-      "createdAt": "2025-01-01T00:00:00.000Z",
-      "updatedAt": "2025-01-01T00:00:00.000Z",
-      "givenNames": "Megan",
-      "surname": "Thompson",
-      "sex": "F",
-      "birth": {
-        "date": "2018-01-14",
-        "place": "Portland, OR"
-      },
-      "notes": "Great-granddaughter"
-    },
-    {
-      "id": "person-039",
-      "_rev": "rev-039",
-      "createdAt": "2025-01-01T00:00:00.000Z",
-      "updatedAt": "2025-01-01T00:00:00.000Z",
-      "givenNames": "Olivia",
-      "surname": "Taylor",
-      "sex": "F",
-      "birth": {
-        "date": "2020-05-18",
-        "place": "Portland, OR"
-      },
-      "notes": "Great-granddaughter"
-    },
-    {
-      "id": "person-040",
-      "_rev": "rev-040",
-      "createdAt": "2025-01-01T00:00:00.000Z",
-      "updatedAt": "2025-01-01T00:00:00.000Z",
-      "givenNames": "Mason",
-      "surname": "Taylor",
-      "sex": "M",
-      "birth": {
-        "date": "2019-03-17",
-        "place": "Portland, OR"
-      },
-      "notes": "Great-grandson"
-    },
-    {
-      "id": "person-041",
-      "_rev": "rev-041",
-      "createdAt": "2025-01-01T00:00:00.000Z",
-      "updatedAt": "2025-01-01T00:00:00.000Z",
-      "givenNames": "Amanda",
-      "surname": "Smith",
-      "sex": "F",
-      "birth": {
-        "date": "2010-08-03",
-        "place": "Boston, MA"
-      },
-      "notes": "Granddaughter"
-    },
-    {
-      "id": "person-042",
-      "_rev": "rev-042",
-      "createdAt": "2025-01-01T00:00:00.000Z",
-      "updatedAt": "2025-01-01T00:00:00.000Z",
-      "givenNames": "Lisa",
-      "surname": "Thompson",
-      "birthName": "Garcia",
-      "sex": "F",
-      "birth": {
-        "date": "2012-12-19",
-        "place": "Miami, FL"
-      },
-      "notes": "Partner"
     }
   ],
   "families": [
@@ -604,7 +252,7 @@
       "updatedAt": "2025-01-01T00:00:00.000Z",
       "spouse1Id": "person-001",
       "spouse2Id": "person-002",
-      "childIds": ["person-003", "person-005", "person-007", "person-009"],
+      "childIds": ["person-003", "person-005", "person-007"],
       "marriageDate": {
         "date": "1974-09-15",
         "place": "New York, NY"
@@ -618,7 +266,7 @@
       "updatedAt": "2025-01-01T00:00:00.000Z",
       "spouse1Id": "person-003",
       "spouse2Id": "person-004",
-      "childIds": ["person-011", "person-012", "person-013", "person-014", "person-015", "person-016", "person-017"],
+      "childIds": ["person-011", "person-012", "person-013"],
       "marriageDate": {
         "date": "2003-05-20",
         "place": "Chicago, IL"
@@ -632,7 +280,7 @@
       "updatedAt": "2025-01-01T00:00:00.000Z",
       "spouse1Id": "person-005",
       "spouse2Id": "person-006",
-      "childIds": ["person-018", "person-019", "person-020", "person-021", "person-022", "person-023", "person-024"],
+      "childIds": ["person-018", "person-019", "person-020"],
       "marriageDate": {
         "date": "2008-07-12",
         "place": "Denver, CO"
@@ -646,52 +294,10 @@
       "updatedAt": "2025-01-01T00:00:00.000Z",
       "spouse1Id": "person-007",
       "spouse2Id": "person-008",
-      "childIds": ["person-025", "person-026", "person-027", "person-028", "person-029", "person-030"],
+      "childIds": ["person-025", "person-026", "person-027"],
       "marriageDate": {
         "date": "2005-08-22",
         "place": "Houston, TX"
-      },
-      "type": "married"
-    },
-    {
-      "id": "family-005",
-      "_rev": "fam-rev-005",
-      "createdAt": "2025-01-01T00:00:00.000Z",
-      "updatedAt": "2025-01-01T00:00:00.000Z",
-      "spouse1Id": "person-009",
-      "spouse2Id": "person-010",
-      "childIds": ["person-031", "person-032", "person-033", "person-034", "person-035", "person-041"],
-      "marriageDate": {
-        "date": "2002-06-18",
-        "place": "Seattle, WA"
-      },
-      "type": "married"
-    },
-    {
-      "id": "family-006",
-      "_rev": "fam-rev-006",
-      "createdAt": "2025-01-01T00:00:00.000Z",
-      "updatedAt": "2025-01-01T00:00:00.000Z",
-      "spouse1Id": "person-035",
-      "spouse2Id": "person-036",
-      "childIds": ["person-037", "person-038", "person-039"],
-      "marriageDate": {
-        "date": "2008-05-14",
-        "place": "Portland, OR"
-      },
-      "type": "married"
-    },
-    {
-      "id": "family-007",
-      "_rev": "fam-rev-007",
-      "createdAt": "2025-01-01T00:00:00.000Z",
-      "updatedAt": "2025-01-01T00:00:00.000Z",
-      "spouse1Id": "person-041",
-      "spouse2Id": "person-042",
-      "childIds": [],
-      "marriageDate": {
-        "date": "2018-09-10",
-        "place": "Boston, MA"
       },
       "type": "married"
     }
@@ -702,8 +308,8 @@
       "_rev": "tree-rev-001",
       "createdAt": "2025-01-01T00:00:00.000Z",
       "updatedAt": "2025-01-01T00:00:00.000Z",
-      "name": "Smith Family Tree - Extended",
-      "description": "A comprehensive family tree spanning 5 generations with 42 people all connected",
+      "name": "Smith Family Tree",
+      "description": "A connected family tree with 4 generations and 17 people all linked together",
       "rootPersonId": "person-001"
     }
   ]
