@@ -1,4 +1,4 @@
-import { useCallback, useMemo, useEffect } from 'react';
+import React, { useCallback, useMemo, useEffect, useRef } from 'react';
 import {
   ReactFlow,
   Background,
@@ -59,12 +59,25 @@ function FamilyTreeViewInner({
   const [nodes, setNodes, onNodesChange] = useNodesState(initialLayout.nodes);
   const [edges, setEdges, onEdgesChange] = useEdgesState(initialLayout.edges);
 
+  // Track previous orientation to detect changes
+  const prevOrientationRef = useRef(orientation);
+
   // Update nodes when persons/families/orientation changes
   useEffect(() => {
     const newLayout = generateTreeLayout(persons, families, rootPersonId, orientation, isMobile);
-    setNodes(newLayout.nodes);
-    setEdges(newLayout.edges);
-  }, [persons, families, rootPersonId, orientation, isMobile, setNodes, setEdges]);
+    
+    // If orientation changed, apply auto-layout for better arrangement
+    if (prevOrientationRef.current !== orientation) {
+      const layoutedNodes = autoLayoutTree(newLayout.nodes, newLayout.edges, orientation, isMobile);
+      setNodes(layoutedNodes);
+      setEdges(newLayout.edges);
+      prevOrientationRef.current = orientation;
+      setTimeout(() => fitView({ padding: 0.2, duration: 500 }), 50);
+    } else {
+      setNodes(newLayout.nodes);
+      setEdges(newLayout.edges);
+    }
+  }, [persons, families, rootPersonId, orientation, isMobile, setNodes, setEdges, fitView]);
 
   // Auto-layout on sample data import
   useEffect(() => {
