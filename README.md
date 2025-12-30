@@ -7,6 +7,8 @@ I couldn't find a family tree solution that met my needs: completely free, fully
 
 **Live Demo:** [https://my-kin-map.vercel.app/](https://my-kin-map.vercel.app/)
 
+![My Kin Map Screenshot](./public/screenshots/image.png)
+
 ## Features
 
 - **Interactive Family Tree** - Visualize your family structure with an interactive, zoomable canvas
