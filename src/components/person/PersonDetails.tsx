@@ -103,7 +103,7 @@ export function PersonDetails({
   };
 
   return (
-    <Card>
+    <Card className="bg-card/100 backdrop-blur-sm">
       <CardHeader className="pb-2">
         <div className="flex items-start gap-4">
           <Avatar className="h-16 w-16">

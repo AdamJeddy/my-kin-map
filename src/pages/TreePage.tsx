@@ -122,7 +122,7 @@ export function TreePage({ onAddPerson: _onAddPerson }: TreePageProps) {
 
       {/* Person Details Panel (desktop) */}
       {!isMobile && selectedPerson && isDetailsOpen && (
-        <div className="absolute top-4 right-4 w-80 max-h-[calc(100%-2rem)] overflow-y-auto bg-background rounded-lg shadow-lg border">
+        <div className="absolute top-4 right-4 w-80 max-h-[calc(100%-2rem)] overflow-y-auto bg-card/95 backdrop-blur-sm rounded-lg shadow-xl border border-border/80">
           <PersonDetails
             person={selectedPerson}
             parents={personRelations?.parents}
