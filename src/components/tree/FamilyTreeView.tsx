@@ -7,6 +7,7 @@ import {
   useNodesState,
   useEdgesState,
   useReactFlow,
+  ReactFlowProvider,
   type NodeTypes,
   Panel,
 } from '@xyflow/react';
@@ -36,14 +37,17 @@ interface FamilyTreeViewProps {
   onBackgroundClick?: () => void;
 }
 
-// Inner component that can use useReactFlow
-function TreeContent({
+// Inner component that uses ReactFlow hooks
+function FamilyTreeViewInner({
   persons,
   families,
   rootPersonId,
-  isMobile,
-  settings,
-}: Omit<FamilyTreeViewProps, 'onPersonClick' | 'onPersonDoubleClick' | 'onBackgroundClick'> & { isMobile: boolean; settings: ReturnType<typeof useSettings> }) {
+  onPersonClick,
+  onPersonDoubleClick,
+  onBackgroundClick,
+}: FamilyTreeViewProps) {
+  const isMobile = useIsMobile();
+  const settings = useSettings();
   const orientation = settings?.layoutOrientation ?? 'vertical';
   const { fitView } = useReactFlow();
 
@@ -52,36 +56,27 @@ function TreeContent({
     return generateTreeLayout(persons, families, rootPersonId, orientation, isMobile);
   }, [persons, families, rootPersonId, orientation, isMobile]);
 
-  const [nodes, setNodes] = useNodesState(initialLayout.nodes);
-  const [edges, setEdges] = useEdgesState(initialLayout.edges);
+  const [nodes, setNodes, onNodesChange] = useNodesState(initialLayout.nodes);
+  const [edges, setEdges, onEdgesChange] = useEdgesState(initialLayout.edges);
 
-  // Update nodes when layout changes
-  useMemo(() => {
-    setNodes(initialLayout.nodes);
-    setEdges(initialLayout.edges);
-  }, [initialLayout, setNodes, setEdges]);
-
-  // Auto-layout on data load (initial load or sample data import)
+  // Update nodes when persons/families/orientation changes
   useEffect(() => {
-    if (nodes.length === 0) return;
-    
+    const newLayout = generateTreeLayout(persons, families, rootPersonId, orientation, isMobile);
+    setNodes(newLayout.nodes);
+    setEdges(newLayout.edges);
+  }, [persons, families, rootPersonId, orientation, isMobile, setNodes, setEdges]);
+
+  // Auto-layout on sample data import
+  useEffect(() => {
     const shouldAutoLayout = localStorage.getItem('triggerAutoLayout');
-    const hasProcessedInitialLayout = sessionStorage.getItem('hasProcessedInitialLayout');
-    
-    // Run auto-layout if explicitly triggered (sample data) or on first load with data
-    if (shouldAutoLayout || !hasProcessedInitialLayout) {
-      const layoutedNodes = autoLayoutTree(nodes, edges, orientation, isMobile);
-      setNodes(layoutedNodes);
-      
-      // Fit view to see all nodes after layout
+    if (shouldAutoLayout && nodes.length > 0) {
       setTimeout(() => {
-        fitView({ padding: 0.2, duration: 500 });
+        setNodes((currentNodes) => autoLayoutTree(currentNodes, edges, orientation, isMobile));
+        setTimeout(() => fitView({ padding: 0.2, duration: 500 }), 100);
       }, 100);
-      
       localStorage.removeItem('triggerAutoLayout');
-      sessionStorage.setItem('hasProcessedInitialLayout', 'true');
     }
-  }, [persons.length, nodes, edges, orientation, isMobile, setNodes, fitView]);
+  }, [nodes.length, edges, orientation, isMobile, setNodes, fitView]);
 
   // Toggle layout orientation
   const toggleOrientation = useCallback(async () => {
@@ -92,102 +87,36 @@ function TreeContent({
 
   // Auto-layout handler
   const handleAutoLayout = useCallback(() => {
-    const layoutedNodes = autoLayoutTree(nodes, edges, orientation, isMobile);
-    setNodes(layoutedNodes);
-    setTimeout(() => {
-      fitView({ padding: 0.2, duration: 500 });
-    }, 50);
-  }, [nodes, edges, orientation, isMobile, setNodes, fitView]);
+    setNodes((currentNodes) => autoLayoutTree(currentNodes, edges, orientation, isMobile));
+    setTimeout(() => fitView({ padding: 0.2, duration: 500 }), 50);
+  }, [edges, orientation, isMobile, setNodes, fitView]);
 
-  return (
-    <>
-      <Background gap={20} size={1} />
-      
-      {/* Controls - desktop only */}
-      {!isMobile && (
-        <Controls 
-          showInteractive={false}
-          className="!bg-background !border !border-border !rounded-lg !shadow-md"
-        />
-      )}
-
-      {/* MiniMap - desktop only */}
-      {!isMobile && (
-        <MiniMap 
-          nodeStrokeWidth={3}
-          zoomable
-          pannable
-          className="!bg-background !border !border-border !rounded-lg"
-        />
-      )}
-
-      {/* Layout toggle panel */}
-      <Panel position="top-right" className="flex gap-2">
-        <Button
-          variant="outline"
-          size={isMobile ? 'icon' : 'sm'}
-          onClick={handleAutoLayout}
-          title="Auto-arrange nodes to reduce overlap"
-        >
-          <Zap className="h-4 w-4" />
-          {!isMobile && <span className="ml-2">Auto Layout</span>}
-        </Button>
-        <Button
-          variant="outline"
-          size={isMobile ? 'icon' : 'sm'}
-          onClick={toggleOrientation}
-          title={`Switch to ${orientation === 'vertical' ? 'horizontal' : 'vertical'} layout`}
-        >
-          {orientation === 'vertical' ? (
-            <LayoutList className="h-4 w-4" />
-          ) : (
-            <LayoutGrid className="h-4 w-4" />
-          )}
-          {!isMobile && (
-            <span className="ml-2">
-              {orientation === 'vertical' ? 'Horizontal' : 'Vertical'}
-            </span>
-          )}
-        </Button>
-      </Panel>
-
-      {/* Mobile zoom controls */}
-      {isMobile && (
-        <Panel position="bottom-right" className="flex flex-col gap-2 mb-20">
-          <Button variant="outline" size="icon" className="h-10 w-10">
-            <ZoomIn className="h-5 w-5" />
-          </Button>
-          <Button variant="outline" size="icon" className="h-10 w-10">
-            <ZoomOut className="h-5 w-5" />
-          </Button>
-          <Button variant="outline" size="icon" className="h-10 w-10">
-            <Maximize className="h-5 w-5" />
-          </Button>
-        </Panel>
-      )}
-    </>
+  // Node click handlers
+  const handleNodeClick = useCallback(
+    (_event: React.MouseEvent, node: any) => {
+      const person = node.data.person || node.data.person1;
+      if (onPersonClick && person) {
+        onPersonClick(person);
+      }
+    },
+    [onPersonClick]
   );
-}
 
-export function FamilyTreeView({
-  persons,
-  families,
-  rootPersonId,
-  onPersonClick,
-  onPersonDoubleClick,
-  onBackgroundClick,
-}: FamilyTreeViewProps) {
-  const isMobile = useIsMobile();
-  const settings = useSettings();
+  const handleNodeDoubleClick = useCallback(
+    (_event: React.MouseEvent, node: any) => {
+      const person = node.data.person || node.data.person1;
+      if (onPersonDoubleClick && person) {
+        onPersonDoubleClick(person);
+      }
+    },
+    [onPersonDoubleClick]
+  );
 
-  // Generate initial layout
-  const initialLayout = useMemo(() => {
-    const orientation = settings?.layoutOrientation ?? 'vertical';
-    return generateTreeLayout(persons, families, rootPersonId, orientation, isMobile);
-  }, [persons, families, rootPersonId, settings?.layoutOrientation, isMobile]);
-
-  const [nodes] = useNodesState(initialLayout.nodes);
-  const [edges] = useEdgesState(initialLayout.edges);
+  const handlePaneClick = useCallback(() => {
+    if (onBackgroundClick) {
+      onBackgroundClick();
+    }
+  }, [onBackgroundClick]);
 
   // Empty state
   if (persons.length === 0) {
@@ -205,41 +134,16 @@ export function FamilyTreeView({
     );
   }
 
-  // These need to be defined at this level for ReactFlow handlers
-  const handleNodeClickWrapper = useCallback(
-    (_event: React.MouseEvent, node: any) => {
-      const person = node.data.person || node.data.person1;
-      if (onPersonClick && person) {
-        onPersonClick(person);
-      }
-    },
-    [onPersonClick]
-  );
-
-  const handleNodeDoubleClickWrapper = useCallback(
-    (_event: React.MouseEvent, node: any) => {
-      const person = node.data.person || node.data.person1;
-      if (onPersonDoubleClick && person) {
-        onPersonDoubleClick(person);
-      }
-    },
-    [onPersonDoubleClick]
-  );
-
-  const handlePaneClickWrapper = useCallback(() => {
-    if (onBackgroundClick) {
-      onBackgroundClick();
-    }
-  }, [onBackgroundClick]);
-
   return (
     <div className="w-full h-full">
       <ReactFlow
         nodes={nodes}
         edges={edges}
-        onNodeClick={handleNodeClickWrapper}
-        onNodeDoubleClick={handleNodeDoubleClickWrapper}
-        onPaneClick={handlePaneClickWrapper}
+        onNodesChange={onNodesChange}
+        onEdgesChange={onEdgesChange}
+        onNodeClick={handleNodeClick}
+        onNodeDoubleClick={handleNodeDoubleClick}
+        onPaneClick={handlePaneClick}
         nodeTypes={nodeTypes}
         fitView
         fitViewOptions={{ padding: 0.2 }}
@@ -254,14 +158,80 @@ export function FamilyTreeView({
         nodesConnectable={false}
         aria-label="Family tree visualization"
       >
-        <TreeContent
-          persons={persons}
-          families={families}
-          rootPersonId={rootPersonId}
-          isMobile={isMobile}
-          settings={settings}
-        />
+        <Background gap={20} size={1} />
+        
+        {/* Controls - desktop only */}
+        {!isMobile && (
+          <Controls 
+            showInteractive={false}
+            className="!bg-background !border !border-border !rounded-lg !shadow-md"
+          />
+        )}
+
+        {/* MiniMap - desktop only */}
+        {!isMobile && (
+          <MiniMap 
+            nodeStrokeWidth={3}
+            zoomable
+            pannable
+            className="!bg-background !border !border-border !rounded-lg"
+          />
+        )}
+
+        {/* Layout toggle panel */}
+        <Panel position="top-right" className="flex gap-2">
+          <Button
+            variant="outline"
+            size={isMobile ? 'icon' : 'sm'}
+            onClick={handleAutoLayout}
+            title="Auto-arrange nodes to reduce overlap"
+          >
+            <Zap className="h-4 w-4" />
+            {!isMobile && <span className="ml-2">Auto Layout</span>}
+          </Button>
+          <Button
+            variant="outline"
+            size={isMobile ? 'icon' : 'sm'}
+            onClick={toggleOrientation}
+            title={`Switch to ${orientation === 'vertical' ? 'horizontal' : 'vertical'} layout`}
+          >
+            {orientation === 'vertical' ? (
+              <LayoutList className="h-4 w-4" />
+            ) : (
+              <LayoutGrid className="h-4 w-4" />
+            )}
+            {!isMobile && (
+              <span className="ml-2">
+                {orientation === 'vertical' ? 'Horizontal' : 'Vertical'}
+              </span>
+            )}
+          </Button>
+        </Panel>
+
+        {/* Mobile zoom controls */}
+        {isMobile && (
+          <Panel position="bottom-right" className="flex flex-col gap-2 mb-20">
+            <Button variant="outline" size="icon" className="h-10 w-10">
+              <ZoomIn className="h-5 w-5" />
+            </Button>
+            <Button variant="outline" size="icon" className="h-10 w-10">
+              <ZoomOut className="h-5 w-5" />
+            </Button>
+            <Button variant="outline" size="icon" className="h-10 w-10">
+              <Maximize className="h-5 w-5" />
+            </Button>
+          </Panel>
+        )}
       </ReactFlow>
     </div>
+  );
+}
+
+// Wrapper component that provides ReactFlowProvider
+export function FamilyTreeView(props: FamilyTreeViewProps) {
+  return (
+    <ReactFlowProvider>
+      <FamilyTreeViewInner {...props} />
+    </ReactFlowProvider>
   );
 }
