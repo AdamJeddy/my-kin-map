@@ -68,14 +68,6 @@ function AppLayout() {
 
   return (
     <div className="h-screen flex overflow-hidden bg-background">
-      {/* Install Banner (non-iOS) */}
-      {showInstallBanner && (
-        <InstallBanner
-          onInstall={promptInstall}
-          onDismiss={handleDismissInstallBanner}
-        />
-      )}
-
       {/* iOS Install Prompt */}
       <IOSInstallPrompt
         open={showIOSPrompt && !settings?.hasSeenInstallPrompt}
@@ -89,6 +81,13 @@ function AppLayout() {
 
       {/* Main Content */}
       <main className={`flex-1 flex flex-col overflow-hidden ${isMobile ? 'pb-16' : ''}`}>
+        {/* Install Banner (non-iOS) */}
+        {showInstallBanner && (
+          <InstallBanner
+            onInstall={promptInstall}
+            onDismiss={handleDismissInstallBanner}
+          />
+        )}
         <Routes>
           <Route path="/" element={<TreePage onAddPerson={handleAddPerson} />} />
           <Route path="/search" element={<SearchPage />} />

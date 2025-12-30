@@ -8,7 +8,7 @@ interface InstallBannerProps {
 
 export function InstallBanner({ onInstall, onDismiss }: InstallBannerProps) {
   return (
-    <div className="fixed top-0 left-0 right-0 z-50 bg-primary text-primary-foreground safe-area-inset-top">
+    <div className="w-full bg-primary text-primary-foreground safe-area-inset-top">
       <div className="flex items-center justify-between gap-2 px-4 py-2">
         <div className="flex items-center gap-3 min-w-0">
           <Download className="h-5 w-5 flex-shrink-0" />
