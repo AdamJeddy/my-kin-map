@@ -1,5 +1,5 @@
 import { useMemo } from 'react';
-import { Edit, Trash2, ChevronRight } from 'lucide-react';
+import { Edit, Trash2, ChevronRight, CircleDot } from 'lucide-react';
 import {
   Card,
   CardContent,
@@ -55,6 +55,29 @@ export function PersonDetails({
   const birthInfo = formatDate(person.birth?.date, person.birth?.place);
   const deathInfo = formatDate(person.death?.date, person.death?.place);
 
+  // Gender icon component
+  const GenderIcon = ({ sex, className = "h-3.5 w-3.5" }: { sex?: string; className?: string }) => {
+    if (sex === 'M') {
+      return (
+        <svg className={cn(className, "text-blue-500")} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+          <circle cx="10" cy="14" r="6"/>
+          <path d="M20 4l-6 6"/>
+          <path d="M15 4h5v5"/>
+        </svg>
+      );
+    }
+    if (sex === 'F') {
+      return (
+        <svg className={cn(className, "text-pink-500")} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+          <circle cx="12" cy="9" r="6"/>
+          <path d="M12 15v6"/>
+          <path d="M9 18h6"/>
+        </svg>
+      );
+    }
+    return <CircleDot className={cn(className, "text-muted-foreground")} />;
+  };
+
   // Render person mini card
   const PersonMiniCard = ({ p, indent = false }: { p: Person; indent?: boolean }) => {
     const pPhotoUrl = p.photo ? URL.createObjectURL(p.photo) : null;
@@ -73,8 +96,9 @@ export function PersonDetails({
           {pPhotoUrl && <AvatarImage src={pPhotoUrl} />}
           <AvatarFallback className="text-xs">{pInitials}</AvatarFallback>
         </Avatar>
-        <div className="min-w-0 flex-1">
+        <div className="min-w-0 flex-1 flex items-center gap-1.5">
           <p className="text-sm font-medium truncate">{p.givenNames} {p.surname}</p>
+          <GenderIcon sex={p.sex} />
         </div>
       </button>
     );
@@ -117,7 +141,8 @@ export function PersonDetails({
                 née {person.birthName}
               </p>
             )}
-            <p className="text-sm text-muted-foreground mt-1">
+            <p className="text-sm text-muted-foreground mt-1 flex items-center gap-1.5">
+              <GenderIcon sex={person.sex} className="h-4 w-4" />
               {person.sex === 'M' ? 'Male' : person.sex === 'F' ? 'Female' : 'Unknown'}
             </p>
           </div>
