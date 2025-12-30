@@ -1,4 +1,5 @@
 import type { Edge } from '@xyflow/react';
+import dagre from 'dagre';
 import type { Person, Family, TreeLayoutOrientation } from '@/types';
 import type { PersonNode } from './PersonNode';
 
@@ -14,15 +15,15 @@ const LAYOUT_CONFIG: Record<'desktop' | 'mobile', LayoutConfig> = {
   desktop: {
     nodeWidth: 180,
     nodeHeight: 100,
-    horizontalSpacing: 60,
-    verticalSpacing: 120,
+    horizontalSpacing: 100,
+    verticalSpacing: 160,
     spouseSpacing: 40,
   },
   mobile: {
     nodeWidth: 130,
     nodeHeight: 70,
-    horizontalSpacing: 30,
-    verticalSpacing: 80,
+    horizontalSpacing: 60,
+    verticalSpacing: 110,
     spouseSpacing: 20,
   },
 };
@@ -260,4 +261,59 @@ export function generateTreeLayout(
   });
 
   return { nodes, edges };
+}
+
+/**
+ * Auto-layout tree using dagre for hierarchical positioning
+ * This provides better spacing and prevents node overlap
+ */
+export function autoLayoutTree(
+  nodes: PersonNode[],
+  edges: Edge[],
+  orientation: TreeLayoutOrientation = 'vertical',
+  isMobile: boolean = false
+): PersonNode[] {
+  if (nodes.length === 0) return nodes;
+
+  const config = isMobile ? LAYOUT_CONFIG.mobile : LAYOUT_CONFIG.desktop;
+  
+  // Create a directed graph
+  const g = new dagre.graphlib.Graph();
+  g.setGraph({
+    rankdir: orientation === 'vertical' ? 'TB' : 'LR',
+    nodesep: config.horizontalSpacing,
+    ranksep: config.verticalSpacing,
+  });
+
+  g.setDefaultEdgeLabel(() => ({}));
+
+  // Add nodes to graph
+  nodes.forEach(node => {
+    g.setNode(node.id, {
+      width: config.nodeWidth,
+      height: config.nodeHeight,
+    });
+  });
+
+  // Add edges to graph
+  edges.forEach(edge => {
+    g.setEdge(edge.source, edge.target);
+  });
+
+  // Run layout algorithm
+  dagre.layout(g);
+
+  // Update node positions with computed layout
+  const layoutedNodes = nodes.map(node => {
+    const pos = g.node(node.id);
+    return {
+      ...node,
+      position: {
+        x: pos.x - config.nodeWidth / 2,
+        y: pos.y - config.nodeHeight / 2,
+      },
+    };
+  });
+
+  return layoutedNodes;
 }

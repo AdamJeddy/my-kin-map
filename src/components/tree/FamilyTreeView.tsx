@@ -10,10 +10,10 @@ import {
   Panel,
 } from '@xyflow/react';
 import '@xyflow/react/dist/style.css';
-import { LayoutGrid, LayoutList, ZoomIn, ZoomOut, Maximize } from 'lucide-react';
+import { LayoutGrid, LayoutList, ZoomIn, ZoomOut, Maximize, Zap } from 'lucide-react';
 
 import { PersonNode } from './PersonNode';
-import { generateTreeLayout } from './layout';
+import { generateTreeLayout, autoLayoutTree } from './layout';
 import { Button } from '@/components/ui';
 import { useIsMobile } from '@/hooks';
 import { useSettings, updateSettings } from '@/db';
@@ -96,6 +96,12 @@ export function FamilyTreeView({
     await updateSettings({ layoutOrientation: newOrientation });
   }, [orientation]);
 
+  // Auto-layout handler
+  const handleAutoLayout = useCallback(() => {
+    const layoutedNodes = autoLayoutTree(nodes, edges, orientation, isMobile);
+    setNodes(layoutedNodes);
+  }, [nodes, edges, orientation, isMobile, setNodes]);
+
   // Empty state
   if (persons.length === 0) {
     return (
@@ -161,6 +167,15 @@ export function FamilyTreeView({
 
         {/* Layout toggle panel */}
         <Panel position="top-right" className="flex gap-2">
+          <Button
+            variant="outline"
+            size={isMobile ? 'icon' : 'sm'}
+            onClick={handleAutoLayout}
+            title="Auto-arrange nodes to reduce overlap"
+          >
+            <Zap className="h-4 w-4" />
+            {!isMobile && <span className="ml-2">Auto Layout</span>}
+          </Button>
           <Button
             variant="outline"
             size={isMobile ? 'icon' : 'sm'}
