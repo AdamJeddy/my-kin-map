@@ -51,10 +51,31 @@ function FamilyTreeViewInner({
   const orientation = settings?.layoutOrientation ?? 'vertical';
   const { fitView } = useReactFlow();
 
+  // Inject click handlers into couple nodes
+  const injectHandlersIntoNodes = useCallback((nodes: any[]) => {
+    return nodes.map(node => {
+      if (node.type === 'couple') {
+        return {
+          ...node,
+          data: {
+            ...node.data,
+            onPersonClick,
+            onPersonDoubleClick,
+          },
+        };
+      }
+      return node;
+    });
+  }, [onPersonClick, onPersonDoubleClick]);
+
   // Generate initial layout
   const initialLayout = useMemo(() => {
-    return generateTreeLayout(persons, families, rootPersonId, orientation, isMobile);
-  }, [persons, families, rootPersonId, orientation, isMobile]);
+    const layout = generateTreeLayout(persons, families, rootPersonId, orientation, isMobile);
+    return {
+      nodes: injectHandlersIntoNodes(layout.nodes),
+      edges: layout.edges,
+    };
+  }, [persons, families, rootPersonId, orientation, isMobile, injectHandlersIntoNodes]);
 
   const [nodes, setNodes, onNodesChange] = useNodesState(initialLayout.nodes);
   const [edges, setEdges, onEdgesChange] = useEdgesState(initialLayout.edges);
@@ -69,15 +90,15 @@ function FamilyTreeViewInner({
     // If orientation changed, apply auto-layout for better arrangement
     if (prevOrientationRef.current !== orientation) {
       const layoutedNodes = autoLayoutTree(newLayout.nodes, newLayout.edges, orientation, isMobile);
-      setNodes(layoutedNodes);
+      setNodes(injectHandlersIntoNodes(layoutedNodes));
       setEdges(newLayout.edges);
       prevOrientationRef.current = orientation;
       setTimeout(() => fitView({ padding: 0.2, duration: 500 }), 50);
     } else {
-      setNodes(newLayout.nodes);
+      setNodes(injectHandlersIntoNodes(newLayout.nodes));
       setEdges(newLayout.edges);
     }
-  }, [persons, families, rootPersonId, orientation, isMobile, setNodes, setEdges, fitView]);
+  }, [persons, families, rootPersonId, orientation, isMobile, setNodes, setEdges, fitView, injectHandlersIntoNodes]);
 
   // Auto-layout on sample data import
   useEffect(() => {

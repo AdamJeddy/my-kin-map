@@ -11,6 +11,8 @@ export interface CoupleNodeData extends Record<string, unknown> {
   isSelected?: boolean;
   compact?: boolean;
   orientation?: 'horizontal' | 'vertical';
+  onPersonClick?: (person: Person) => void;
+  onPersonDoubleClick?: (person: Person) => void;
 }
 
 export type CoupleNode = Node<CoupleNodeData, 'couple'>;
@@ -21,7 +23,7 @@ interface CoupleNodeProps {
 }
 
 function CoupleNodeComponent({ data, selected }: CoupleNodeProps) {
-  const { person1, person2, isRoot, compact, orientation = 'vertical' } = data;
+  const { person1, person2, isRoot, compact, orientation = 'vertical', onPersonClick, onPersonDoubleClick } = data;
 
   // Create object URLs for photos
   const photo1Url = useMemo(() => {
@@ -88,12 +90,22 @@ function CoupleNodeComponent({ data, selected }: CoupleNodeProps) {
 
         <div className="space-y-2">
           {/* Person 1 */}
-          <div className="flex items-center gap-2">
+          <button
+            onClick={(e) => {
+              e.stopPropagation();
+              onPersonClick?.(person1);
+            }}
+            onDoubleClick={(e) => {
+              e.stopPropagation();
+              onPersonDoubleClick?.(person1);
+            }}
+            className="flex items-center gap-2 w-full hover:bg-accent/50 rounded p-1 transition-colors"
+          >
             <Avatar className="h-7 w-7 flex-shrink-0">
               {photo1Url && <AvatarImage src={photo1Url} alt={person1.givenNames} />}
               <AvatarFallback className="text-xs">{initials1}</AvatarFallback>
             </Avatar>
-            <div className="min-w-0 flex-1">
+            <div className="min-w-0 flex-1 text-left">
               <p className="text-xs font-medium truncate">
                 {person1.givenNames}
               </p>
@@ -101,18 +113,28 @@ function CoupleNodeComponent({ data, selected }: CoupleNodeProps) {
                 {person1.surname}
               </p>
             </div>
-          </div>
+          </button>
 
           {/* Connector */}
           <div className="text-center text-xs text-muted-foreground font-semibold">&</div>
 
           {/* Person 2 */}
-          <div className="flex items-center gap-2">
+          <button
+            onClick={(e) => {
+              e.stopPropagation();
+              onPersonClick?.(person2);
+            }}
+            onDoubleClick={(e) => {
+              e.stopPropagation();
+              onPersonDoubleClick?.(person2);
+            }}
+            className="flex items-center gap-2 w-full hover:bg-accent/50 rounded p-1 transition-colors"
+          >
             <Avatar className="h-7 w-7 flex-shrink-0">
               {photo2Url && <AvatarImage src={photo2Url} alt={person2.givenNames} />}
               <AvatarFallback className="text-xs">{initials2}</AvatarFallback>
             </Avatar>
-            <div className="min-w-0 flex-1">
+            <div className="min-w-0 flex-1 text-left">
               <p className="text-xs font-medium truncate">
                 {person2.givenNames}
               </p>
@@ -120,7 +142,7 @@ function CoupleNodeComponent({ data, selected }: CoupleNodeProps) {
                 {person2.surname}
               </p>
             </div>
-          </div>
+          </button>
         </div>
       </div>
     );
@@ -150,12 +172,22 @@ function CoupleNodeComponent({ data, selected }: CoupleNodeProps) {
 
       <div className="space-y-3">
         {/* Person 1 */}
-        <div className="flex items-center gap-3">
+        <button
+          onClick={(e) => {
+            e.stopPropagation();
+            onPersonClick?.(person1);
+          }}
+          onDoubleClick={(e) => {
+            e.stopPropagation();
+            onPersonDoubleClick?.(person1);
+          }}
+          className="flex items-center gap-3 w-full hover:bg-accent/50 rounded p-2 transition-colors"
+        >
           <Avatar className="h-10 w-10 flex-shrink-0">
             {photo1Url && <AvatarImage src={photo1Url} alt={person1.givenNames} />}
             <AvatarFallback>{initials1}</AvatarFallback>
           </Avatar>
-          <div className="flex-1 min-w-0">
+          <div className="flex-1 min-w-0 text-left">
             <p className="font-semibold text-sm leading-tight">
               {person1.givenNames}
             </p>
@@ -168,18 +200,28 @@ function CoupleNodeComponent({ data, selected }: CoupleNodeProps) {
               </p>
             )}
           </div>
-        </div>
+        </button>
 
         {/* Connector */}
         <div className="text-center text-muted-foreground font-semibold text-lg">&</div>
 
         {/* Person 2 */}
-        <div className="flex items-center gap-3">
+        <button
+          onClick={(e) => {
+            e.stopPropagation();
+            onPersonClick?.(person2);
+          }}
+          onDoubleClick={(e) => {
+            e.stopPropagation();
+            onPersonDoubleClick?.(person2);
+          }}
+          className="flex items-center gap-3 w-full hover:bg-accent/50 rounded p-2 transition-colors"
+        >
           <Avatar className="h-10 w-10 flex-shrink-0">
             {photo2Url && <AvatarImage src={photo2Url} alt={person2.givenNames} />}
             <AvatarFallback>{initials2}</AvatarFallback>
           </Avatar>
-          <div className="flex-1 min-w-0">
+          <div className="flex-1 min-w-0 text-left">
             <p className="font-semibold text-sm leading-tight">
               {person2.givenNames}
             </p>
@@ -192,7 +234,7 @@ function CoupleNodeComponent({ data, selected }: CoupleNodeProps) {
               </p>
             )}
           </div>
-        </div>
+        </button>
       </div>
     </div>
   );
