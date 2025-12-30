@@ -1,5 +1,5 @@
 import { useMemo } from 'react';
-import { Edit, Trash2, Users, User } from 'lucide-react';
+import { Edit, Trash2, ChevronRight } from 'lucide-react';
 import {
   Card,
   CardContent,
@@ -10,6 +10,7 @@ import {
   AvatarFallback,
   AvatarImage,
 } from '@/components/ui';
+import { cn } from '@/lib/utils';
 import type { Person } from '@/types';
 
 interface PersonDetailsProps {
@@ -55,15 +56,19 @@ export function PersonDetails({
   const deathInfo = formatDate(person.death?.date, person.death?.place);
 
   // Render person mini card
-  const PersonMiniCard = ({ p }: { p: Person }) => {
+  const PersonMiniCard = ({ p, indent = false }: { p: Person; indent?: boolean }) => {
     const pPhotoUrl = p.photo ? URL.createObjectURL(p.photo) : null;
     const pInitials = (p.givenNames?.charAt(0) || '') + (p.surname?.charAt(0) || '');
     
     return (
       <button
         onClick={() => onPersonClick?.(p)}
-        className="flex items-center gap-2 p-2 rounded-md hover:bg-muted transition-colors text-left w-full"
+        className={cn(
+          "flex items-center gap-2 p-2 rounded-md hover:bg-muted transition-colors text-left w-full",
+          indent && "ml-4"
+        )}
       >
+        {indent && <ChevronRight className="h-4 w-4 text-muted-foreground flex-shrink-0" />}
         <Avatar className="h-8 w-8">
           {pPhotoUrl && <AvatarImage src={pPhotoUrl} />}
           <AvatarFallback className="text-xs">{pInitials}</AvatarFallback>
@@ -75,29 +80,22 @@ export function PersonDetails({
     );
   };
 
-  // Render relation section
+  // Render relation section with card styling
   const RelationSection = ({ 
     title, 
-    persons, 
-    icon: Icon 
+    bgColor = 'bg-muted/50',
+    children: content,
   }: { 
     title: string; 
-    persons: Person[]; 
-    icon: typeof User;
+    bgColor?: string;
+    children: React.ReactNode;
   }) => {
-    if (persons.length === 0) return null;
-    
     return (
-      <div className="space-y-2">
-        <h4 className="text-sm font-medium text-muted-foreground flex items-center gap-2">
-          <Icon className="h-4 w-4" />
+      <div className={cn('rounded-lg p-3 border', bgColor)}>
+        <h4 className="text-sm font-semibold text-foreground mb-3">
           {title}
         </h4>
-        <div className="space-y-1">
-          {persons.map(p => (
-            <PersonMiniCard key={p.id} p={p} />
-          ))}
-        </div>
+        {content}
       </div>
     );
   };
@@ -161,11 +159,57 @@ export function PersonDetails({
         )}
 
         {/* Relationships */}
-        <div className="border-t pt-4 space-y-4">
-          <RelationSection title="Parents" persons={parents} icon={Users} />
-          <RelationSection title="Spouse(s)" persons={spouses} icon={User} />
-          <RelationSection title="Children" persons={children} icon={Users} />
-          <RelationSection title="Siblings" persons={siblings} icon={Users} />
+        <div className="border-t pt-4 space-y-3">
+          {/* Spouses & Their Children */}
+          {spouses.length > 0 && (
+            <RelationSection 
+              title="Family"
+              bgColor="bg-primary/5 border-primary/20"
+            >
+              <div className="space-y-3">
+                {spouses.map((spouse) => (
+                  <div key={spouse.id}>
+                    <PersonMiniCard p={spouse} />
+                    {children.length > 0 && (
+                      <div className="space-y-1 mt-2">
+                        {children.map((child) => (
+                          <PersonMiniCard key={child.id} p={child} indent />
+                        ))}
+                      </div>
+                    )}
+                  </div>
+                ))}
+              </div>
+            </RelationSection>
+          )}
+
+          {/* Parents */}
+          {parents.length > 0 && (
+            <RelationSection 
+              title="Parents"
+              bgColor="bg-secondary/5 border-secondary/20"
+            >
+              <div className="space-y-2">
+                {parents.map((parent) => (
+                  <PersonMiniCard key={parent.id} p={parent} />
+                ))}
+              </div>
+            </RelationSection>
+          )}
+
+          {/* Siblings */}
+          {siblings.length > 0 && (
+            <RelationSection 
+              title="Siblings"
+              bgColor="bg-secondary/5 border-secondary/20"
+            >
+              <div className="space-y-2">
+                {siblings.map((sibling) => (
+                  <PersonMiniCard key={sibling.id} p={sibling} />
+                ))}
+              </div>
+            </RelationSection>
+          )}
         </div>
       </CardContent>
     </Card>
