@@ -106,6 +106,9 @@ export async function loadSampleData(): Promise<void> {
         updatedAt: new Date(tree.updatedAt),
       });
     }
+
+    // Set flag to trigger auto-layout
+    localStorage.setItem('triggerAutoLayout', 'true');
   } catch (error) {
     console.error('Failed to load sample data:', error);
     throw new Error('Failed to load sample data. Please try again.');
