@@ -23,8 +23,8 @@ export function BottomNav({ onAddClick }: BottomNavProps) {
             className={({ isActive }) =>
               cn(
                 'flex flex-col items-center justify-center gap-1 px-3 py-2 rounded-lg transition-colors touch-target',
-                'text-muted-foreground hover:text-foreground',
-                isActive && 'text-primary'
+                'text-foreground/60 hover:text-foreground hover:bg-muted/50',
+                isActive && 'text-primary bg-primary/10'
               )
             }
           >
@@ -37,12 +37,15 @@ export function BottomNav({ onAddClick }: BottomNavProps) {
       {/* Floating Add Button */}
       <button
         onClick={onAddClick}
+        style={{
+          backgroundColor: 'hsl(var(--primary))',
+          color: 'hsl(var(--primary-foreground))',
+        }}
         className={cn(
           'absolute -top-6 left-1/2 -translate-x-1/2',
           'flex items-center justify-center',
-          'w-14 h-14 rounded-full',
-          'bg-primary text-primary-foreground shadow-lg',
-          'hover:bg-primary/90 active:scale-95 transition-transform',
+          'w-14 h-14 rounded-full shadow-lg',
+          'hover:opacity-90 active:scale-95 transition-transform',
           'touch-target'
         )}
         aria-label="Add person"

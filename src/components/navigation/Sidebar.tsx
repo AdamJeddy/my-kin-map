@@ -20,7 +20,7 @@ export function Sidebar({ onAddClick }: SidebarProps) {
   return (
     <aside
       className={cn(
-        'h-screen bg-card border-r flex flex-col transition-all duration-300',
+        'h-screen bg-background/95 border-r border-border flex flex-col transition-all duration-300',
         collapsed ? 'w-16' : 'w-64'
       )}
     >
@@ -29,29 +29,39 @@ export function Sidebar({ onAddClick }: SidebarProps) {
         {!collapsed && (
           <h1 className="font-semibold text-lg">My Kin Map</h1>
         )}
-        <Button
-          variant="ghost"
-          size="icon"
+        <button
           onClick={() => setCollapsed(!collapsed)}
-          className={cn(collapsed && 'mx-auto')}
+          style={{
+            color: 'hsl(var(--foreground))',
+            backgroundColor: 'transparent',
+          }}
+          className={cn('p-2 rounded-lg transition-colors hover:bg-slate-400/20', collapsed && 'mx-auto')}
         >
           {collapsed ? (
             <ChevronRight className="h-4 w-4" />
           ) : (
             <ChevronLeft className="h-4 w-4" />
           )}
-        </Button>
+        </button>
       </div>
 
       {/* Add Button */}
       <div className="p-3">
-        <Button
+        <button
           onClick={onAddClick}
-          className={cn('w-full', collapsed && 'px-0')}
+          style={{
+            backgroundColor: 'hsl(var(--primary) / 0.85)',
+            color: 'hsl(var(--primary-foreground))',
+          }}
+          className={cn(
+            'w-full flex items-center justify-center gap-2 px-4 py-2 rounded-lg transition-colors font-medium',
+            'hover:opacity-90 active:opacity-75',
+            collapsed && 'px-0'
+          )}
         >
           <Plus className="h-4 w-4" />
-          {!collapsed && <span className="ml-2">Add Person</span>}
-        </Button>
+          {!collapsed && <span>Add Person</span>}
+        </button>
       </div>
 
       {/* Navigation */}
@@ -63,8 +73,8 @@ export function Sidebar({ onAddClick }: SidebarProps) {
             className={({ isActive }) =>
               cn(
                 'flex items-center gap-3 px-3 py-2 rounded-lg transition-colors',
-                'text-muted-foreground hover:text-foreground hover:bg-muted',
-                isActive && 'bg-primary/10 text-primary',
+                'text-foreground/75 hover:text-foreground hover:bg-muted/70',
+                isActive && 'bg-primary/20 text-primary font-semibold',
                 collapsed && 'justify-center'
               )
             }
@@ -79,7 +89,7 @@ export function Sidebar({ onAddClick }: SidebarProps) {
       {/* Footer */}
       <div className="p-4 border-t">
         {!collapsed && (
-          <p className="text-xs text-muted-foreground text-center">
+          <p className="text-xs text-foreground/60 text-center">
             Your data stays on your device
           </p>
         )}

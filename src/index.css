@@ -87,3 +87,34 @@ html, body {
 .react-flow__attribution {
   display: none;
 }
+/* React Flow Controls styling for dark mode */
+.react-flow__controls {
+  background-color: hsl(var(--background));
+  border: 1px solid hsl(var(--border));
+  border-radius: 0.5rem;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+}
+
+.react-flow__controls-button {
+  background-color: hsl(var(--background));
+  color: hsl(var(--foreground));
+  border: 1px solid hsl(var(--border));
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.react-flow__controls-button:hover {
+  background-color: hsl(var(--muted));
+  color: hsl(var(--foreground));
+}
+
+.react-flow__controls-button:active {
+  background-color: hsl(var(--accent));
+}
+
+/* React Flow MiniMap styling for dark mode */
+.react-flow__minimap {
+  background-color: hsl(var(--background));
+  border: 1px solid hsl(var(--border));
+  border-radius: 0.5rem;
+}
