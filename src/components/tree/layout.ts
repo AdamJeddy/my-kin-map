@@ -23,11 +23,11 @@ const LAYOUT_CONFIG: Record<'desktop' | 'mobile', LayoutConfig> = {
     spouseSpacing: 40,
   },
   mobile: {
-    nodeWidth: 160, // Increased for couple nodes
-    nodeHeight: 100, // Increased for couple nodes
-    horizontalSpacing: 60,
-    verticalSpacing: 110,
-    spouseSpacing: 20,
+    nodeWidth: 120, // Reduced for mobile
+    nodeHeight: 80, // Reduced for mobile
+    horizontalSpacing: 40, // More compact
+    verticalSpacing: 80, // Reduced vertical spacing
+    spouseSpacing: 15,
   },
 };
 

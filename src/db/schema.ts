@@ -63,5 +63,54 @@ export async function initializeSettings(): Promise<Settings> {
   return existing;
 }
 
+// Load sample/test data
+export async function loadSampleData(): Promise<void> {
+  try {
+    // Fetch the sample data
+    const response = await fetch('/test-data/sample-family.json');
+    const data = await response.json();
+
+    // Check if data already exists
+    const personCount = await db.persons.count();
+    if (personCount > 0) {
+      const confirmed = window.confirm(
+        `You already have ${personCount} people in your family tree. ` +
+        'Loading sample data will add more people. Continue?'
+      );
+      if (!confirmed) return;
+    }
+
+    // Import persons
+    for (const person of data.persons) {
+      await db.persons.put({
+        ...person,
+        createdAt: new Date(person.createdAt),
+        updatedAt: new Date(person.updatedAt),
+      });
+    }
+
+    // Import families
+    for (const family of data.families) {
+      await db.families.put({
+        ...family,
+        createdAt: new Date(family.createdAt),
+        updatedAt: new Date(family.updatedAt),
+      });
+    }
+
+    // Import trees
+    for (const tree of data.trees) {
+      await db.trees.put({
+        ...tree,
+        createdAt: new Date(tree.createdAt),
+        updatedAt: new Date(tree.updatedAt),
+      });
+    }
+  } catch (error) {
+    console.error('Failed to load sample data:', error);
+    throw new Error('Failed to load sample data. Please try again.');
+  }
+}
+
 // Export the database for use in hooks
 export type { FamilyTreeDatabase };

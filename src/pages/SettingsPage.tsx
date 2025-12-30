@@ -8,11 +8,12 @@ import {
   Sun, 
   Monitor,
   Database,
-  Shield
+  Shield,
+  Zap
 } from 'lucide-react';
 import { MobileHeader } from '@/components/navigation';
 import { useIsMobile } from '@/hooks';
-import { useSettings, updateSettings, db, getStorageEstimate } from '@/db';
+import { useSettings, updateSettings, db, getStorageEstimate, loadSampleData } from '@/db';
 import { 
   Button, 
   Card, 
@@ -34,10 +35,25 @@ export function SettingsPage() {
   const [storageInfo, setStorageInfo] = useState<{ usage: number; quota: number } | null>(null);
   const [isExporting, setIsExporting] = useState(false);
   const [isImporting, setIsImporting] = useState(false);
+  const [isLoadingSample, setIsLoadingSample] = useState(false);
 
   // Load storage info
   useEffect(() => {
     getStorageEstimate().then(setStorageInfo);
+  }, []);
+
+  const handleLoadSampleData = useCallback(async () => {
+    setIsLoadingSample(true);
+    try {
+      await loadSampleData();
+      alert('Sample data loaded successfully! Reloading...');
+      window.location.reload();
+    } catch (error) {
+      console.error('Failed to load sample data:', error);
+      alert('Failed to load sample data. Please try again.');
+    } finally {
+      setIsLoadingSample(false);
+    }
   }, []);
 
   const handleThemeChange = useCallback(async (theme: Settings['theme']) => {
@@ -337,7 +353,22 @@ export function SettingsPage() {
                 <Upload className="h-4 w-4 mr-2" />
                 {isImporting ? 'Importing...' : 'Import from Backup'}
               </Button>
+            </div>
 
+            <div className="flex flex-col gap-2 border-t pt-4">
+              <p className="text-xs text-muted-foreground font-medium">Test the App</p>
+              <Button
+                variant="outline"
+                onClick={handleLoadSampleData}
+                disabled={isLoadingSample}
+                className="justify-start"
+              >
+                <Zap className="h-4 w-4 mr-2" />
+                {isLoadingSample ? 'Loading...' : 'Load Sample Data'}
+              </Button>
+              <p className="text-xs text-muted-foreground">
+                Load a sample family tree with 3 generations to explore the app features.
+              </p>
             </div>
           </CardContent>
         </Card>

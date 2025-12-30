@@ -4,14 +4,21 @@ import { PersonEditor } from '@/components/person';
 import { PersonDetails } from '@/components/person';
 import { MobileHeader } from '@/components/navigation';
 import { useIsMobile } from '@/hooks';
-import { usePersons, useFamilies, getPersonWithRelations, initializeSettings, requestPersistentStorage } from '@/db';
+import { usePersons, useFamilies, getPersonWithRelations, initializeSettings, requestPersistentStorage, loadSampleData } from '@/db';
 import type { Person } from '@/types';
 import {
   Drawer,
   DrawerContent,
   DrawerHeader,
   DrawerTitle,
+  Button,
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
 } from '@/components/ui';
+import { Zap, Plus } from 'lucide-react';
 
 interface TreePageProps {
   onAddPerson?: () => void;
@@ -31,6 +38,7 @@ export function TreePage({ onAddPerson: _onAddPerson }: TreePageProps) {
   } | null>(null);
   const [isDetailsOpen, setIsDetailsOpen] = useState(false);
   const [isEditing, setIsEditing] = useState(false);
+  const [isLoadingSample, setIsLoadingSample] = useState(false);
 
   // Initialize settings and request persistent storage on mount
   useEffect(() => {
@@ -81,18 +89,74 @@ export function TreePage({ onAddPerson: _onAddPerson }: TreePageProps) {
     }
   }, [selectedPerson, loadPersonRelations]);
 
+  const handleLoadSampleData = useCallback(async () => {
+    setIsLoadingSample(true);
+    try {
+      await loadSampleData();
+      window.location.reload();
+    } catch (error) {
+      console.error('Failed to load sample data:', error);
+      alert('Failed to load sample data. Please try again.');
+      setIsLoadingSample(false);
+    }
+  }, []);
+
   return (
     <div className="flex flex-col h-full">
       {isMobile && <MobileHeader title="Family Tree" />}
       
       <div className="flex-1 relative">
-        <FamilyTreeView
-          persons={persons ?? []}
-          families={families ?? []}
-          onPersonClick={handlePersonClick}
-          onPersonDoubleClick={handlePersonDoubleClick}
-          onBackgroundClick={handleCloseDetails}
-        />
+        {(!persons || persons.length === 0) ? (
+          // Empty state
+          <div className="flex items-center justify-center h-full p-4">
+            <Card className="w-full max-w-md">
+              <CardHeader className="text-center">
+                <CardTitle className="text-2xl">Start Your Family Tree</CardTitle>
+                <CardDescription>
+                  No family members yet. Add your first person or load sample data to explore.
+                </CardDescription>
+              </CardHeader>
+              <CardContent className="space-y-3">
+                <Button
+                  variant="outline"
+                  onClick={() => _onAddPerson?.()}
+                  className="w-full justify-center"
+                >
+                  <Plus className="h-4 w-4 mr-2" />
+                  Add First Person
+                </Button>
+                <div className="relative">
+                  <div className="absolute inset-0 flex items-center">
+                    <span className="w-full border-t border-border" />
+                  </div>
+                  <div className="relative flex justify-center text-xs uppercase">
+                    <span className="bg-card px-2 text-muted-foreground">Or try this</span>
+                  </div>
+                </div>
+                <Button
+                  onClick={handleLoadSampleData}
+                  disabled={isLoadingSample}
+                  className="w-full justify-center"
+                >
+                  <Zap className="h-4 w-4 mr-2" />
+                  {isLoadingSample ? 'Loading...' : 'Load Sample Data'}
+                </Button>
+                <p className="text-xs text-muted-foreground text-center">
+                  Load a sample family tree with 4 generations to explore features
+                </p>
+              </CardContent>
+            </Card>
+          </div>
+        ) : (
+          // Family tree view
+          <FamilyTreeView
+            persons={persons ?? []}
+            families={families ?? []}
+            onPersonClick={handlePersonClick}
+            onPersonDoubleClick={handlePersonDoubleClick}
+            onBackgroundClick={handleCloseDetails}
+          />
+        )}
       </div>
 
       {/* Person Details Drawer (mobile) */}
