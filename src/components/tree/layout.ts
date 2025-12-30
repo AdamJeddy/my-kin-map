@@ -2,6 +2,9 @@ import type { Edge } from '@xyflow/react';
 import dagre from 'dagre';
 import type { Person, Family, TreeLayoutOrientation } from '@/types';
 import type { PersonNode } from './PersonNode';
+import type { CoupleNode } from './CoupleNode';
+
+type TreeNode = PersonNode | CoupleNode;
 
 interface LayoutConfig {
   nodeWidth: number;
@@ -13,15 +16,15 @@ interface LayoutConfig {
 
 const LAYOUT_CONFIG: Record<'desktop' | 'mobile', LayoutConfig> = {
   desktop: {
-    nodeWidth: 180,
-    nodeHeight: 100,
+    nodeWidth: 200, // Increased for couple nodes
+    nodeHeight: 140, // Increased for couple nodes
     horizontalSpacing: 100,
     verticalSpacing: 160,
     spouseSpacing: 40,
   },
   mobile: {
-    nodeWidth: 130,
-    nodeHeight: 70,
+    nodeWidth: 160, // Increased for couple nodes
+    nodeHeight: 100, // Increased for couple nodes
     horizontalSpacing: 60,
     verticalSpacing: 110,
     spouseSpacing: 20,
@@ -29,7 +32,7 @@ const LAYOUT_CONFIG: Record<'desktop' | 'mobile', LayoutConfig> = {
 };
 
 interface LayoutResult {
-  nodes: PersonNode[];
+  nodes: TreeNode[];
   edges: Edge[];
 }
 
@@ -50,9 +53,10 @@ export function generateTreeLayout(
 
   const config = isMobile ? LAYOUT_CONFIG.mobile : LAYOUT_CONFIG.desktop;
   const personMap = new Map(persons.map(p => [p.id, p]));
-  const nodes: PersonNode[] = [];
+  const nodes: TreeNode[] = [];
   const edges: Edge[] = [];
   const positioned = new Set<string>();
+  const personToCoupleNodeId = new Map<string, string>(); // Maps person IDs to couple node IDs
 
   // Find root person or use first person
   const rootPerson = rootPersonId 
@@ -81,7 +85,22 @@ export function generateTreeLayout(
     });
   });
 
-  // Position a person node
+  // Pre-create couple nodes to avoid creating them multiple times
+  const createdCouples = new Set<string>();
+  families.forEach(family => {
+    if (family.spouse1Id && family.spouse2Id && family.childIds.length > 0) {
+      // Only create couple nodes for families with children
+      const coupleKey = [family.spouse1Id, family.spouse2Id].sort().join('-');
+      if (!createdCouples.has(coupleKey)) {
+        createdCouples.add(coupleKey);
+        const coupleNodeId = `couple-${coupleKey}`;
+        personToCoupleNodeId.set(family.spouse1Id, coupleNodeId);
+        personToCoupleNodeId.set(family.spouse2Id, coupleNodeId);
+      }
+    }
+  });
+
+  // Position a person or couple node
   function positionPerson(
     person: Person,
     x: number,
@@ -89,9 +108,48 @@ export function generateTreeLayout(
     isRoot: boolean = false
   ): void {
     if (positioned.has(person.id)) return;
+
+    const coupleNodeId = personToCoupleNodeId.get(person.id);
+    
+    // If this person should be part of a couple node, create it (only once)
+    if (coupleNodeId && !nodes.some(n => n.id === coupleNodeId)) {
+      // Find the spouse by looking at families
+      const family = families.find(f => 
+        (f.spouse1Id === person.id && f.spouse2Id) || 
+        (f.spouse2Id === person.id && f.spouse1Id)
+      );
+      
+      if (family) {
+        const spouseId = family.spouse1Id === person.id ? family.spouse2Id : family.spouse1Id;
+        const spouse = personMap.get(spouseId!);
+        
+        if (spouse && !positioned.has(spouseId!)) {
+          positioned.add(person.id);
+          positioned.add(spouseId!);
+          
+          (nodes as CoupleNode[]).push({
+            id: coupleNodeId,
+            type: 'couple',
+            position: { x, y },
+            data: {
+              person1: person,
+              person2: spouse,
+              isRoot,
+              compact: isMobile,
+              orientation,
+            },
+          } as CoupleNode);
+          return;
+        }
+      }
+    }
+    
+    // If spouse already positioned, mark this person as positioned too
+    if (coupleNodeId && positioned.has(person.id)) return;
     positioned.add(person.id);
 
-    nodes.push({
+    // Create individual person node
+    (nodes as PersonNode[]).push({
       id: person.id,
       type: 'person',
       position: { x, y },
@@ -101,7 +159,7 @@ export function generateTreeLayout(
         compact: isMobile,
         orientation,
       },
-    });
+    } as PersonNode);
   }
 
   // Create edge between nodes
@@ -110,13 +168,22 @@ export function generateTreeLayout(
     targetId: string,
     type: 'spouse' | 'parent-child'
   ): void {
-    const edgeId = `${sourceId}-${targetId}`;
+    // Skip spouse edges for couple nodes (they're built into the node)
+    if (type === 'spouse' && (personToCoupleNodeId.has(sourceId) || personToCoupleNodeId.has(targetId))) {
+      return;
+    }
+
+    // Resolve to actual node IDs (accounting for couple nodes)
+    const sourceNodeId = personToCoupleNodeId.get(sourceId) || sourceId;
+    const targetNodeId = personToCoupleNodeId.get(targetId) || targetId;
+    
+    const edgeId = `${sourceNodeId}-${targetNodeId}`;
     if (edges.some(e => e.id === edgeId)) return;
 
     edges.push({
       id: edgeId,
-      source: sourceId,
-      target: targetId,
+      source: sourceNodeId,
+      target: targetNodeId,
       type: 'smoothstep',
       style: {
         stroke: type === 'spouse' ? '#f472b6' : '#94a3b8',
@@ -268,11 +335,11 @@ export function generateTreeLayout(
  * This provides better spacing and prevents node overlap
  */
 export function autoLayoutTree(
-  nodes: PersonNode[],
+  nodes: TreeNode[],
   edges: Edge[],
   orientation: TreeLayoutOrientation = 'vertical',
   isMobile: boolean = false
-): PersonNode[] {
+): TreeNode[] {
   if (nodes.length === 0) return nodes;
 
   const config = isMobile ? LAYOUT_CONFIG.mobile : LAYOUT_CONFIG.desktop;
@@ -289,9 +356,10 @@ export function autoLayoutTree(
 
   // Add nodes to graph
   nodes.forEach(node => {
+    const isCoupleNode = node.type === 'couple';
     g.setNode(node.id, {
-      width: config.nodeWidth,
-      height: config.nodeHeight,
+      width: isCoupleNode ? config.nodeWidth : config.nodeWidth,
+      height: isCoupleNode ? config.nodeHeight : config.nodeHeight,
     });
   });
 

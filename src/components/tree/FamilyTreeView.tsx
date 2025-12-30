@@ -13,6 +13,7 @@ import '@xyflow/react/dist/style.css';
 import { LayoutGrid, LayoutList, ZoomIn, ZoomOut, Maximize, Zap } from 'lucide-react';
 
 import { PersonNode } from './PersonNode';
+import { CoupleNode } from './CoupleNode';
 import { generateTreeLayout, autoLayoutTree } from './layout';
 import { Button } from '@/components/ui';
 import { useIsMobile } from '@/hooks';
@@ -22,6 +23,7 @@ import type { Person, Family, TreeLayoutOrientation } from '@/types';
 // Register custom node types
 const nodeTypes: NodeTypes = {
   person: PersonNode,
+  couple: CoupleNode,
 };
 
 interface FamilyTreeViewProps {
@@ -62,10 +64,11 @@ export function FamilyTreeView({
 
   // Handle node click
   const handleNodeClick = useCallback(
-    (_event: React.MouseEvent, node: { id: string; data: { person: Person } }) => {
+    (_event: React.MouseEvent, node: any) => {
+      const person = node.data.person || node.data.person1;
       setSelectedPersonId(node.id);
-      if (onPersonClick) {
-        onPersonClick(node.data.person);
+      if (onPersonClick && person) {
+        onPersonClick(person);
       }
     },
     [onPersonClick]
@@ -73,9 +76,10 @@ export function FamilyTreeView({
 
   // Handle node double click
   const handleNodeDoubleClick = useCallback(
-    (_event: React.MouseEvent, node: { id: string; data: { person: Person } }) => {
-      if (onPersonDoubleClick) {
-        onPersonDoubleClick(node.data.person);
+    (_event: React.MouseEvent, node: any) => {
+      const person = node.data.person || node.data.person1;
+      if (onPersonDoubleClick && person) {
+        onPersonDoubleClick(person);
       }
     },
     [onPersonDoubleClick]
