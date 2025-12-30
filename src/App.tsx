@@ -80,7 +80,7 @@ function AppLayout() {
       {!isMobile && <Sidebar onAddClick={handleAddPerson} />}
 
       {/* Main Content */}
-      <main className={`flex-1 flex flex-col overflow-hidden ${isMobile ? 'pb-16' : ''}`}>
+      <main className={`flex-1 flex flex-col overflow-hidden ${isMobile ? 'pb-20' : ''}`}>
         {/* Install Banner (non-iOS) */}
         {showInstallBanner && (
           <InstallBanner

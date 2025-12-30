@@ -42,7 +42,7 @@ export function BottomNav({ onAddClick }: BottomNavProps) {
           color: 'hsl(var(--primary-foreground))',
         }}
         className={cn(
-          'absolute -top-6 left-1/2 -translate-x-1/2',
+          'absolute -top-20 left-6',
           'flex items-center justify-center',
           'w-14 h-14 rounded-full shadow-lg',
           'hover:opacity-90 active:scale-95 transition-transform',
