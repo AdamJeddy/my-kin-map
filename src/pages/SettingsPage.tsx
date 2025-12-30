@@ -8,13 +8,11 @@ import {
   Sun, 
   Monitor,
   Database,
-  Shield,
-  FileText
+  Shield
 } from 'lucide-react';
 import { MobileHeader } from '@/components/navigation';
 import { useIsMobile } from '@/hooks';
 import { useSettings, updateSettings, db, getStorageEstimate } from '@/db';
-import { importGedcom, exportGedcom } from '@/lib/gedcom';
 import { 
   Button, 
   Card, 
@@ -36,8 +34,6 @@ export function SettingsPage() {
   const [storageInfo, setStorageInfo] = useState<{ usage: number; quota: number } | null>(null);
   const [isExporting, setIsExporting] = useState(false);
   const [isImporting, setIsImporting] = useState(false);
-  const [isExportingGedcom, setIsExportingGedcom] = useState(false);
-  const [isImportingGedcom, setIsImportingGedcom] = useState(false);
 
   // Load storage info
   useEffect(() => {
@@ -57,56 +53,6 @@ export function SettingsPage() {
       const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
       document.documentElement.classList.toggle('dark', prefersDark);
     }
-  }, []);
-
-  const handleExportGedcom = useCallback(async () => {
-    setIsExportingGedcom(true);
-    try {
-      const gedcomContent = await exportGedcom();
-      const blob = new Blob([gedcomContent], { type: 'text/plain' });
-      const url = URL.createObjectURL(blob);
-      const a = document.createElement('a');
-      a.href = url;
-      a.download = `my-kin-map-${new Date().toISOString().split('T')[0]}.ged`;
-      a.click();
-      URL.revokeObjectURL(url);
-    } catch (error) {
-      console.error('GEDCOM export failed:', error);
-      alert('GEDCOM export failed. Please try again.');
-    } finally {
-      setIsExportingGedcom(false);
-    }
-  }, []);
-
-  const handleImportGedcom = useCallback(async () => {
-    const input = document.createElement('input');
-    input.type = 'file';
-    input.accept = '.ged,.gedcom';
-    
-    input.onchange = async (e) => {
-      const file = (e.target as HTMLInputElement).files?.[0];
-      if (!file) return;
-
-      setIsImportingGedcom(true);
-      try {
-        const text = await file.text();
-        const confirmed = window.confirm(
-          'This will import a GEDCOM file. Existing data will be preserved, but duplicate entries may be created. Continue?'
-        );
-        if (!confirmed) return;
-
-        const result = await importGedcom(text);
-        alert(`Import successful! Imported ${result.persons} people and ${result.families} families.`);
-        window.location.reload();
-      } catch (error) {
-        console.error('GEDCOM import failed:', error);
-        alert('GEDCOM import failed. Please check the file format and try again.');
-      } finally {
-        setIsImportingGedcom(false);
-      }
-    };
-
-    input.click();
   }, []);
 
   const handleExportJSON = useCallback(async () => {

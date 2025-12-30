@@ -1,12 +1,11 @@
 import { useState, useCallback } from 'react';
 import { Calendar } from 'lucide-react';
-import { Input, Label, Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui';
+import { Input, Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui';
 import { cn } from '@/lib/utils';
 
 interface DateInputProps {
   value?: string;
   onChange: (value: string) => void;
-  placeholder?: string;
   className?: string;
 }
 
@@ -136,9 +135,6 @@ export function DateInput({ value = '', onChange, placeholder, className }: Date
     setDay(newDay);
     updateValue(precision, year, month, newDay);
   }, [precision, year, month, updateValue]);
-
-  const currentYear = new Date().getFullYear();
-  const years = Array.from({ length: 150 }, (_, i) => currentYear - i);
 
   return (
     <div className={cn("space-y-2", className)}>

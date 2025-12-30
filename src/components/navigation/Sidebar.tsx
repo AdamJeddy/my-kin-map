@@ -2,7 +2,6 @@ import { NavLink } from 'react-router-dom';
 import { TreePine, Search, Settings, Plus, ChevronLeft, ChevronRight } from 'lucide-react';
 import { useState } from 'react';
 import { cn } from '@/lib/utils';
-import { Button } from '@/components/ui';
 
 interface SidebarProps {
   onAddClick?: () => void;
