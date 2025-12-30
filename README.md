@@ -1,14 +1,11 @@
 # My Kin Map
-
-A modern, interactive family tree visualization tool. Build, explore, and share your family history with an intuitive visual interface—completely locally, completely secure.
-
-**Live Demo:** [https://my-kin-map.vercel.app/](https://my-kin-map.vercel.app/)
-
 ## Why I Built This
 
 I couldn't find a family tree solution that met my needs: completely free, fully secure, and with complete data ownership. Most existing tools either charge money, store your sensitive family information on their servers, or make it difficult to export your data. 
 
-**My Kin Map is different.** Everything runs in your browser. Your family data never leaves your device—it's stored locally using IndexedDB. You have complete control over your information, and you can export it anytime for backup or future use.
+**My Kin Map is different.** Everything runs in your browser. Your family data never leaves your device it's stored locally using IndexedDB. You have complete control over your information, and you can export it anytime for backup or future use.
+
+**Live Demo:** [https://my-kin-map.vercel.app/](https://my-kin-map.vercel.app/)
 
 ## Features
 
