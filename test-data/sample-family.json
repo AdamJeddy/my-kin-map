@@ -1,0 +1,240 @@
+{
+  "version": 1,
+  "exportDate": "2025-12-30T12:00:00.000Z",
+  "persons": [
+    {
+      "id": "person-001",
+      "_rev": "rev-001",
+      "createdAt": "2025-01-01T00:00:00.000Z",
+      "updatedAt": "2025-01-01T00:00:00.000Z",
+      "givenNames": "John",
+      "surname": "Smith",
+      "sex": "M",
+      "birth": {
+        "date": "1950-03-15",
+        "place": "New York, NY"
+      },
+      "notes": "Family patriarch, retired engineer"
+    },
+    {
+      "id": "person-002",
+      "_rev": "rev-002",
+      "createdAt": "2025-01-01T00:00:00.000Z",
+      "updatedAt": "2025-01-01T00:00:00.000Z",
+      "givenNames": "Mary",
+      "surname": "Smith",
+      "birthName": "Johnson",
+      "sex": "F",
+      "birth": {
+        "date": "1952-07-22",
+        "place": "Boston, MA"
+      },
+      "notes": "Family matriarch, former teacher"
+    },
+    {
+      "id": "person-003",
+      "_rev": "rev-003",
+      "createdAt": "2025-01-01T00:00:00.000Z",
+      "updatedAt": "2025-01-01T00:00:00.000Z",
+      "givenNames": "Robert",
+      "surname": "Smith",
+      "sex": "M",
+      "birth": {
+        "date": "1975-11-08",
+        "place": "Chicago, IL"
+      },
+      "notes": "Eldest son, software developer"
+    },
+    {
+      "id": "person-004",
+      "_rev": "rev-004",
+      "createdAt": "2025-01-01T00:00:00.000Z",
+      "updatedAt": "2025-01-01T00:00:00.000Z",
+      "givenNames": "Sarah",
+      "surname": "Smith",
+      "birthName": "Williams",
+      "sex": "F",
+      "birth": {
+        "date": "1978-04-30",
+        "place": "Los Angeles, CA"
+      },
+      "notes": "Robert's wife, architect"
+    },
+    {
+      "id": "person-005",
+      "_rev": "rev-005",
+      "createdAt": "2025-01-01T00:00:00.000Z",
+      "updatedAt": "2025-01-01T00:00:00.000Z",
+      "givenNames": "Emily",
+      "surname": "Smith",
+      "sex": "F",
+      "birth": {
+        "date": "1980-09-12",
+        "place": "Chicago, IL"
+      },
+      "notes": "Daughter of John and Mary"
+    },
+    {
+      "id": "person-006",
+      "_rev": "rev-006",
+      "createdAt": "2025-01-01T00:00:00.000Z",
+      "updatedAt": "2025-01-01T00:00:00.000Z",
+      "givenNames": "Michael",
+      "surname": "Brown",
+      "sex": "M",
+      "birth": {
+        "date": "1979-02-14",
+        "place": "Denver, CO"
+      },
+      "notes": "Emily's husband, chef"
+    },
+    {
+      "id": "person-007",
+      "_rev": "rev-007",
+      "createdAt": "2025-01-01T00:00:00.000Z",
+      "updatedAt": "2025-01-01T00:00:00.000Z",
+      "givenNames": "Emma",
+      "surname": "Smith",
+      "sex": "F",
+      "birth": {
+        "date": "2005-06-20",
+        "place": "Chicago, IL"
+      },
+      "notes": "Robert and Sarah's daughter"
+    },
+    {
+      "id": "person-008",
+      "_rev": "rev-008",
+      "createdAt": "2025-01-01T00:00:00.000Z",
+      "updatedAt": "2025-01-01T00:00:00.000Z",
+      "givenNames": "James",
+      "surname": "Smith",
+      "sex": "M",
+      "birth": {
+        "date": "2008-12-03",
+        "place": "Chicago, IL"
+      },
+      "notes": "Robert and Sarah's son"
+    },
+    {
+      "id": "person-009",
+      "_rev": "rev-009",
+      "createdAt": "2025-01-01T00:00:00.000Z",
+      "updatedAt": "2025-01-01T00:00:00.000Z",
+      "givenNames": "Olivia",
+      "surname": "Brown",
+      "sex": "F",
+      "birth": {
+        "date": "2010-08-25",
+        "place": "Denver, CO"
+      },
+      "notes": "Emily and Michael's daughter"
+    },
+    {
+      "id": "person-010",
+      "_rev": "rev-010",
+      "createdAt": "2025-01-01T00:00:00.000Z",
+      "updatedAt": "2025-01-01T00:00:00.000Z",
+      "givenNames": "William",
+      "surname": "Smith",
+      "sex": "M",
+      "birth": {
+        "date": "1920-01-10",
+        "place": "Philadelphia, PA"
+      },
+      "death": {
+        "date": "1995-05-20",
+        "place": "New York, NY"
+      },
+      "notes": "John's father"
+    },
+    {
+      "id": "person-011",
+      "_rev": "rev-011",
+      "createdAt": "2025-01-01T00:00:00.000Z",
+      "updatedAt": "2025-01-01T00:00:00.000Z",
+      "givenNames": "Elizabeth",
+      "surname": "Smith",
+      "birthName": "Davis",
+      "sex": "F",
+      "birth": {
+        "date": "1922-06-15",
+        "place": "Baltimore, MD"
+      },
+      "death": {
+        "date": "2010-11-30",
+        "place": "New York, NY"
+      },
+      "notes": "John's mother"
+    }
+  ],
+  "families": [
+    {
+      "id": "family-001",
+      "_rev": "fam-rev-001",
+      "createdAt": "2025-01-01T00:00:00.000Z",
+      "updatedAt": "2025-01-01T00:00:00.000Z",
+      "spouse1Id": "person-010",
+      "spouse2Id": "person-011",
+      "childIds": ["person-001"],
+      "marriageDate": {
+        "date": "1945-06-01",
+        "place": "Philadelphia, PA"
+      },
+      "type": "married"
+    },
+    {
+      "id": "family-002",
+      "_rev": "fam-rev-002",
+      "createdAt": "2025-01-01T00:00:00.000Z",
+      "updatedAt": "2025-01-01T00:00:00.000Z",
+      "spouse1Id": "person-001",
+      "spouse2Id": "person-002",
+      "childIds": ["person-003", "person-005"],
+      "marriageDate": {
+        "date": "1974-09-15",
+        "place": "New York, NY"
+      },
+      "type": "married"
+    },
+    {
+      "id": "family-003",
+      "_rev": "fam-rev-003",
+      "createdAt": "2025-01-01T00:00:00.000Z",
+      "updatedAt": "2025-01-01T00:00:00.000Z",
+      "spouse1Id": "person-003",
+      "spouse2Id": "person-004",
+      "childIds": ["person-007", "person-008"],
+      "marriageDate": {
+        "date": "2003-05-20",
+        "place": "Chicago, IL"
+      },
+      "type": "married"
+    },
+    {
+      "id": "family-004",
+      "_rev": "fam-rev-004",
+      "createdAt": "2025-01-01T00:00:00.000Z",
+      "updatedAt": "2025-01-01T00:00:00.000Z",
+      "spouse1Id": "person-006",
+      "spouse2Id": "person-005",
+      "childIds": ["person-009"],
+      "marriageDate": {
+        "date": "2008-07-12",
+        "place": "Denver, CO"
+      },
+      "type": "married"
+    }
+  ],
+  "trees": [
+    {
+      "id": "tree-001",
+      "_rev": "tree-rev-001",
+      "createdAt": "2025-01-01T00:00:00.000Z",
+      "updatedAt": "2025-01-01T00:00:00.000Z",
+      "name": "Smith Family Tree",
+      "description": "A sample family tree spanning four generations",
+      "rootPersonId": "person-001"
+    }
+  ]
+}

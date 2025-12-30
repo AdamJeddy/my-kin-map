@@ -1,0 +1,158 @@
+0 HEAD
+1 SOUR My Kin Map Test Data
+2 VERS 1.0
+1 GEDC
+2 VERS 5.5.1
+2 FORM LINEAGE-LINKED
+1 CHAR UTF-8
+1 DATE 30 DEC 2025
+0 @I1@ INDI
+1 NAME John /Smith/
+2 GIVN John
+2 SURN Smith
+1 SEX M
+1 BIRT
+2 DATE 15 MAR 1950
+2 PLAC New York, NY
+1 NOTE Family patriarch, retired engineer
+1 FAMS @F2@
+1 FAMC @F1@
+0 @I2@ INDI
+1 NAME Mary /Johnson/
+2 GIVN Mary
+2 SURN Johnson
+1 SEX F
+1 BIRT
+2 DATE 22 JUL 1952
+2 PLAC Boston, MA
+1 NOTE Family matriarch, former teacher
+1 FAMS @F2@
+0 @I3@ INDI
+1 NAME Robert /Smith/
+2 GIVN Robert
+2 SURN Smith
+1 SEX M
+1 BIRT
+2 DATE 08 NOV 1975
+2 PLAC Chicago, IL
+1 NOTE Eldest son, software developer
+1 FAMS @F3@
+1 FAMC @F2@
+0 @I4@ INDI
+1 NAME Sarah /Williams/
+2 GIVN Sarah
+2 SURN Williams
+1 SEX F
+1 BIRT
+2 DATE 30 APR 1978
+2 PLAC Los Angeles, CA
+1 NOTE Robert's wife, architect
+1 FAMS @F3@
+0 @I5@ INDI
+1 NAME Emily /Smith/
+2 GIVN Emily
+2 SURN Smith
+1 SEX F
+1 BIRT
+2 DATE 12 SEP 1980
+2 PLAC Chicago, IL
+1 NOTE Daughter of John and Mary
+1 FAMS @F4@
+1 FAMC @F2@
+0 @I6@ INDI
+1 NAME Michael /Brown/
+2 GIVN Michael
+2 SURN Brown
+1 SEX M
+1 BIRT
+2 DATE 14 FEB 1979
+2 PLAC Denver, CO
+1 NOTE Emily's husband, chef
+1 FAMS @F4@
+0 @I7@ INDI
+1 NAME Emma /Smith/
+2 GIVN Emma
+2 SURN Smith
+1 SEX F
+1 BIRT
+2 DATE 20 JUN 2005
+2 PLAC Chicago, IL
+1 NOTE Robert and Sarah's daughter
+1 FAMC @F3@
+0 @I8@ INDI
+1 NAME James /Smith/
+2 GIVN James
+2 SURN Smith
+1 SEX M
+1 BIRT
+2 DATE 03 DEC 2008
+2 PLAC Chicago, IL
+1 NOTE Robert and Sarah's son
+1 FAMC @F3@
+0 @I9@ INDI
+1 NAME Olivia /Brown/
+2 GIVN Olivia
+2 SURN Brown
+1 SEX F
+1 BIRT
+2 DATE 25 AUG 2010
+2 PLAC Denver, CO
+1 NOTE Emily and Michael's daughter
+1 FAMC @F4@
+0 @I10@ INDI
+1 NAME William /Smith/
+2 GIVN William
+2 SURN Smith
+1 SEX M
+1 BIRT
+2 DATE 10 JAN 1920
+2 PLAC Philadelphia, PA
+1 DEAT
+2 DATE 20 MAY 1995
+2 PLAC New York, NY
+1 NOTE John's father
+1 FAMS @F1@
+0 @I11@ INDI
+1 NAME Elizabeth /Davis/
+2 GIVN Elizabeth
+2 SURN Davis
+1 SEX F
+1 BIRT
+2 DATE 15 JUN 1922
+2 PLAC Baltimore, MD
+1 DEAT
+2 DATE 30 NOV 2010
+2 PLAC New York, NY
+1 NOTE John's mother
+1 FAMS @F1@
+0 @F1@ FAM
+1 HUSB @I10@
+1 WIFE @I11@
+1 CHIL @I1@
+1 MARR
+2 DATE 01 JUN 1945
+2 PLAC Philadelphia, PA
+0 @F2@ FAM
+1 HUSB @I1@
+1 WIFE @I2@
+1 CHIL @I3@
+1 CHIL @I5@
+1 MARR
+2 DATE 15 SEP 1974
+2 PLAC New York, NY
+0 @F3@ FAM
+1 HUSB @I3@
+1 WIFE @I4@
+1 CHIL @I7@
+1 CHIL @I8@
+1 MARR
+2 DATE 20 MAY 2003
+2 PLAC Chicago, IL
+0 @F4@ FAM
+1 HUSB @I6@
+1 WIFE @I5@
+1 CHIL @I9@
+1 MARR
+2 DATE 12 JUL 2008
+2 PLAC Denver, CO
+0 TRLR
