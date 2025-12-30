@@ -1,0 +1,28 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="512" height="512" viewBox="0 0 100 100">
+  <defs>
+    <linearGradient id="gradient" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#3b82f6;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#1d4ed8;stop-opacity:1" />
+    </linearGradient>
+  </defs>
+  
+  <!-- Maskable safe area background (full bleed) -->
+  <rect width="100" height="100" fill="url(#gradient)"/>
+  
+  <!-- Tree trunk -->
+  <rect x="46" y="55" width="8" height="20" rx="2" fill="#fef3c7"/>
+  
+  <!-- Tree crown (represents family connections) - centered for safe area -->
+  <circle cx="50" cy="42" r="18" fill="#22c55e"/>
+  <circle cx="36" cy="38" r="10" fill="#16a34a"/>
+  <circle cx="64" cy="38" r="10" fill="#16a34a"/>
+  <circle cx="50" cy="30" r="9" fill="#15803d"/>
+  
+  <!-- Family dots (people) -->
+  <circle cx="50" cy="42" r="3.5" fill="white"/>
+  <circle cx="39" cy="38" r="2.5" fill="white"/>
+  <circle cx="61" cy="38" r="2.5" fill="white"/>
+  <circle cx="50" cy="30" r="2.5" fill="white"/>
+  <circle cx="44" cy="47" r="2" fill="white"/>
+  <circle cx="56" cy="47" r="2" fill="white"/>
+</svg>
