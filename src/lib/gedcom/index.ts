@@ -160,16 +160,58 @@ export async function importGedcom(gedcomContent: string): Promise<{ persons: nu
   const individuals: GedcomIndividual[] = [];
   const familyRecords: GedcomFamily[] = [];
 
-  // parse-gedcom returns an object with a children array
-  const records = (parsed as { children?: unknown[] }).children || [];
-  
-  for (const record of records as Array<{ tag?: string; pointer?: string; tree?: unknown[] }>) {
-    if (record.tag === 'INDI') {
-      individuals.push(record as unknown as GedcomIndividual);
-    } else if (record.tag === 'FAM') {
-      familyRecords.push(record as unknown as GedcomFamily);
+  // Normalize a record's pointer and children regardless of key names
+  const normalize = (record: any) => {
+    const pointer = record?.pointer || record?.id || record?.xref; // xref used by parse-gedcom
+    const children = Array.isArray(record?.tree)
+      ? record.tree
+      : Array.isArray(record?.children)
+        ? record.children
+        : [];
+    return { tag: record?.tag, pointer, children };
+  };
+
+  // Helper to walk any level and collect INDI/FAM records
+  const collectRecords = (records: any[]) => {
+    for (const raw of records) {
+      const rec = normalize(raw);
+      if (!rec.tag) continue;
+
+      // Ensure downstream readers see pointer/tree
+      if (rec.pointer) {
+        (raw as any).pointer = rec.pointer;
+      }
+      if (!raw.tree && rec.children?.length) {
+        (raw as any).tree = rec.children;
+      }
+
+      if (rec.tag === 'INDI' && rec.pointer) {
+        individuals.push(raw as unknown as GedcomIndividual);
+      } else if (rec.tag === 'FAM' && rec.pointer) {
+        familyRecords.push(raw as unknown as GedcomFamily);
+      }
+
+      if (rec.children.length) {
+        collectRecords(rec.children as any[]);
+      }
     }
-  }
+  };
+
+  const parsedChildren = (parsed as any)?.children;
+  const rootRecords = Array.isArray(parsed)
+    ? parsed
+    : Array.isArray(parsedChildren)
+      ? parsedChildren
+      : parsedChildren && typeof parsedChildren === 'object'
+        ? Object.values(parsedChildren)
+        : [];
+
+  // If everything is nested under a HEAD node, descend once into it
+  const maybeHead = rootRecords.length === 1 && (rootRecords[0] as any)?.tag === 'HEAD'
+    ? normalize(rootRecords[0]).children
+    : rootRecords;
+
+  collectRecords(maybeHead as any[]);
 
   // Parse all records
   const persons = individuals.map(parseIndividual);
