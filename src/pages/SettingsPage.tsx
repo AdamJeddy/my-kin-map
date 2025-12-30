@@ -13,6 +13,7 @@ import {
 } from 'lucide-react';
 import { MobileHeader } from '@/components/navigation';
 import { useIsMobile } from '@/hooks';
+import { useToast } from '@/hooks/useToast';
 import { useSettings, updateSettings, db, getStorageEstimate, loadSampleData } from '@/db';
 import { 
   Button, 
@@ -26,16 +27,25 @@ import {
   SelectItem,
   SelectTrigger,
   SelectValue,
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogHeader,
+  DialogTitle,
+  DialogFooter,
 } from '@/components/ui';
 import type { Settings } from '@/types';
 
 export function SettingsPage() {
   const isMobile = useIsMobile();
   const settings = useSettings();
+  const { addToast } = useToast();
   const [storageInfo, setStorageInfo] = useState<{ usage: number; quota: number } | null>(null);
   const [isExporting, setIsExporting] = useState(false);
   const [isImporting, setIsImporting] = useState(false);
   const [isLoadingSample, setIsLoadingSample] = useState(false);
+  const [showClearDataConfirm, setShowClearDataConfirm] = useState(false);
+  const [showImportConfirm, setShowImportConfirm] = useState<{ pending: boolean; data?: any }>({ pending: false });
 
   // Load storage info
   useEffect(() => {
@@ -46,15 +56,24 @@ export function SettingsPage() {
     setIsLoadingSample(true);
     try {
       await loadSampleData();
-      alert('Sample data loaded successfully! Reloading...');
-      window.location.reload();
+      addToast({
+        type: 'success',
+        title: 'Success',
+        description: 'Sample data loaded successfully! Reloading...',
+        duration: 2000,
+      });
+      setTimeout(() => window.location.reload(), 1500);
     } catch (error) {
       console.error('Failed to load sample data:', error);
-      alert('Failed to load sample data. Please try again.');
+      addToast({
+        type: 'error',
+        title: 'Error',
+        description: 'Failed to load sample data. Please try again.',
+      });
     } finally {
       setIsLoadingSample(false);
     }
-  }, []);
+  }, [addToast]);
 
   const handleThemeChange = useCallback(async (theme: Settings['theme']) => {
     await updateSettings({ theme });
@@ -115,13 +134,23 @@ export function SettingsPage() {
       URL.revokeObjectURL(url);
 
       await updateSettings({ lastBackupDate: new Date() });
+      
+      addToast({
+        type: 'success',
+        title: 'Success',
+        description: 'Backup exported successfully',
+      });
     } catch (error) {
       console.error('Export failed:', error);
-      alert('Export failed. Please try again.');
+      addToast({
+        type: 'error',
+        title: 'Error',
+        description: 'Export failed. Please try again.',
+      });
     } finally {
       setIsExporting(false);
     }
-  }, []);
+  }, [addToast]);
 
   const handleImportJSON = useCallback(async () => {
     const input = document.createElement('input');
@@ -141,87 +170,134 @@ export function SettingsPage() {
           throw new Error('Invalid backup file format');
         }
 
-        // Confirm import
-        const confirmed = window.confirm(
-          `This will import ${data.persons.length} people and ${data.families?.length ?? 0} families. ` +
-          'Existing data with the same IDs will be overwritten. Continue?'
-        );
-        if (!confirmed) return;
-
-        // Import persons
-        for (const person of data.persons) {
-          // Convert base64 photo back to Blob
-          let photoBlob: Blob | undefined;
-          if (person.photo && typeof person.photo === 'string') {
-            const binary = atob(person.photo);
-            const bytes = new Uint8Array(binary.length);
-            for (let i = 0; i < binary.length; i++) {
-              bytes[i] = binary.charCodeAt(i);
-            }
-            photoBlob = new Blob([bytes]);
+        // Show confirmation
+        setShowImportConfirm({ 
+          pending: true, 
+          data: {
+            ...data,
+            personCount: data.persons.length,
+            familyCount: data.families?.length ?? 0,
           }
-
-          await db.persons.put({
-            ...person,
-            photo: photoBlob,
-            createdAt: new Date(person.createdAt),
-            updatedAt: new Date(person.updatedAt),
-          });
-        }
-
-        // Import families
-        if (data.families) {
-          for (const family of data.families) {
-            await db.families.put({
-              ...family,
-              createdAt: new Date(family.createdAt),
-              updatedAt: new Date(family.updatedAt),
-            });
-          }
-        }
-
-        // Import trees
-        if (data.trees) {
-          for (const tree of data.trees) {
-            await db.trees.put({
-              ...tree,
-              createdAt: new Date(tree.createdAt),
-              updatedAt: new Date(tree.updatedAt),
-            });
-          }
-        }
-
-        alert('Import successful!');
-        window.location.reload();
+        });
       } catch (error) {
         console.error('Import failed:', error);
-        alert('Import failed. Please check the file format and try again.');
-      } finally {
+        addToast({
+          type: 'error',
+          title: 'Error',
+          description: 'Import failed. Please check the file format and try again.',
+        });
         setIsImporting(false);
       }
     };
 
     input.click();
+  }, [addToast]);
+
+  const handleConfirmImport = useCallback(async () => {
+    if (!showImportConfirm.data) return;
+
+    try {
+      const data = showImportConfirm.data;
+
+      // Import persons
+      for (const person of data.persons) {
+        // Convert base64 photo back to Blob
+        let photoBlob: Blob | undefined;
+        if (person.photo && typeof person.photo === 'string') {
+          const binary = atob(person.photo);
+          const bytes = new Uint8Array(binary.length);
+          for (let i = 0; i < binary.length; i++) {
+            bytes[i] = binary.charCodeAt(i);
+          }
+          photoBlob = new Blob([bytes]);
+        }
+
+        await db.persons.put({
+          ...person,
+          photo: photoBlob,
+          createdAt: new Date(person.createdAt),
+          updatedAt: new Date(person.updatedAt),
+        });
+      }
+
+      // Import families
+      if (data.families) {
+        for (const family of data.families) {
+          await db.families.put({
+            ...family,
+            createdAt: new Date(family.createdAt),
+            updatedAt: new Date(family.updatedAt),
+          });
+        }
+      }
+
+      // Import trees
+      if (data.trees) {
+        for (const tree of data.trees) {
+          await db.trees.put({
+            ...tree,
+            createdAt: new Date(tree.createdAt),
+            updatedAt: new Date(tree.updatedAt),
+          });
+        }
+      }
+
+      addToast({
+        type: 'success',
+        title: 'Success',
+        description: 'Import successful! Reloading...',
+        duration: 2000,
+      });
+      setTimeout(() => window.location.reload(), 1500);
+    } catch (error) {
+      console.error('Import failed:', error);
+      addToast({
+        type: 'error',
+        title: 'Error',
+        description: 'Import failed. Please try again.',
+      });
+    } finally {
+      setIsImporting(false);
+      setShowImportConfirm({ pending: false });
+    }
+  }, [showImportConfirm.data, addToast]);
+
+  const handleCancelImport = useCallback(() => {
+    setShowImportConfirm({ pending: false });
+    setIsImporting(false);
   }, []);
 
   const handleClearData = useCallback(async () => {
-    const confirmed = window.confirm(
-      'Are you sure you want to delete ALL data? This cannot be undone. ' +
-      'Please export a backup first!'
-    );
-    if (!confirmed) return;
+    setShowClearDataConfirm(true);
+  }, []);
 
-    const doubleConfirmed = window.confirm(
-      'This is your last chance! All people, families, and photos will be permanently deleted.'
-    );
-    if (!doubleConfirmed) return;
+  const handleConfirmClearData = useCallback(async () => {
+    try {
+      await db.persons.clear();
+      await db.families.clear();
+      await db.trees.clear();
 
-    await db.persons.clear();
-    await db.families.clear();
-    await db.trees.clear();
+      addToast({
+        type: 'success',
+        title: 'Success',
+        description: 'All data has been deleted. Reloading...',
+        duration: 2000,
+      });
+      setTimeout(() => window.location.reload(), 1500);
+    } catch (error) {
+      console.error('Clear failed:', error);
+      addToast({
+        type: 'error',
+        title: 'Error',
+        description: 'Failed to delete data. Please try again.',
+      });
+    } finally {
+      setShowClearDataConfirm(false);
+    }
+  }, [addToast]);
 
-    alert('All data has been deleted.');
-    window.location.reload();
+  const handleCancelClearData = useCallback(() => {
+    setShowClearDataConfirm(false);
   }, []);
 
   const formatBytes = (bytes: number) => {
@@ -393,6 +469,46 @@ export function SettingsPage() {
           </CardContent>
         </Card>
       </div>
+
+      {/* Clear Data Confirmation Dialog */}
+      <Dialog open={showClearDataConfirm} onOpenChange={setShowClearDataConfirm}>
+        <DialogContent>
+          <DialogHeader>
+            <DialogTitle>Delete All Data?</DialogTitle>
+            <DialogDescription>
+              Are you sure you want to delete ALL data? This cannot be undone. Please export a backup first!
+            </DialogDescription>
+          </DialogHeader>
+          <DialogFooter className="gap-2">
+            <Button variant="outline" onClick={handleCancelClearData}>
+              Cancel
+            </Button>
+            <Button variant="destructive" onClick={handleConfirmClearData}>
+              Delete All Data
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
+
+      {/* Import Confirmation Dialog */}
+      <Dialog open={showImportConfirm.pending} onOpenChange={(open) => !open && handleCancelImport()}>
+        <DialogContent>
+          <DialogHeader>
+            <DialogTitle>Import Backup?</DialogTitle>
+            <DialogDescription>
+              This will import {showImportConfirm.data?.personCount} people and {showImportConfirm.data?.familyCount} families. Existing data with the same IDs will be overwritten. Continue?
+            </DialogDescription>
+          </DialogHeader>
+          <DialogFooter className="gap-2">
+            <Button variant="outline" onClick={handleCancelImport}>
+              Cancel
+            </Button>
+            <Button onClick={handleConfirmImport}>
+              Import
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
     </div>
   );
 }

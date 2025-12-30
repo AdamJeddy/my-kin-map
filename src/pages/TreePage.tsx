@@ -4,6 +4,7 @@ import { PersonEditor } from '@/components/person';
 import { PersonDetails } from '@/components/person';
 import { MobileHeader } from '@/components/navigation';
 import { useIsMobile } from '@/hooks';
+import { useToast } from '@/hooks/useToast';
 import { usePersons, useFamilies, getPersonWithRelations, initializeSettings, requestPersistentStorage, loadSampleData } from '@/db';
 import type { Person } from '@/types';
 import {
@@ -26,6 +27,7 @@ interface TreePageProps {
 
 export function TreePage({ onAddPerson: _onAddPerson }: TreePageProps) {
   const isMobile = useIsMobile();
+  const { addToast } = useToast();
   const persons = usePersons();
   const families = useFamilies();
   
@@ -93,13 +95,23 @@ export function TreePage({ onAddPerson: _onAddPerson }: TreePageProps) {
     setIsLoadingSample(true);
     try {
       await loadSampleData();
-      window.location.reload();
+      addToast({
+        type: 'success',
+        title: 'Success',
+        description: 'Sample data loaded successfully! Reloading...',
+        duration: 2000,
+      });
+      setTimeout(() => window.location.reload(), 1500);
     } catch (error) {
       console.error('Failed to load sample data:', error);
-      alert('Failed to load sample data. Please try again.');
+      addToast({
+        type: 'error',
+        title: 'Error',
+        description: 'Failed to load sample data. Please try again.',
+      });
       setIsLoadingSample(false);
     }
-  }, []);
+  }, [addToast]);
 
   return (
     <div className="flex flex-col h-full">

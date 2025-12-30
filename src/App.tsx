@@ -4,6 +4,7 @@ import { TreePage, SearchPage, SettingsPage } from '@/pages';
 import { BottomNav, Sidebar } from '@/components/navigation';
 import { PersonEditor } from '@/components/person';
 import { IOSInstallPrompt, InstallBanner } from '@/components/install';
+import { ToastProvider, ToastContainer } from '@/components/ui';
 import { useIsMobile, useInstallPrompt } from '@/hooks';
 import { useSettings, updateSettings } from '@/db';
 import './App.css';
@@ -103,15 +104,20 @@ function AppLayout() {
         open={isAddPersonOpen}
         onOpenChange={setIsAddPersonOpen}
       />
+
+      {/* Toast Container */}
+      <ToastContainer />
     </div>
   );
 }
 
 function App() {
   return (
-    <BrowserRouter>
-      <AppLayout />
-    </BrowserRouter>
+    <ToastProvider>
+      <BrowserRouter>
+        <AppLayout />
+      </BrowserRouter>
+    </ToastProvider>
   );
 }
 
