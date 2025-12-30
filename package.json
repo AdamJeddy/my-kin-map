@@ -1,7 +1,22 @@
 {
   "name": "my-kin-map",
+  "version": "1.0.0",
+  "description": "An interactive family tree visualization tool. Build, explore, and share your family history.",
+  "author": "Adam Jeddy",
+  "license": "UNLICENSED",
   "private": true,
-  "version": "0.0.0",
+  "homepage": "https://my-kin-map.vercel.app",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/AdamJeddy/my-kin-map"
+  },
+  "keywords": [
+    "family-tree",
+    "genealogy",
+    "visualization",
+    "react",
+    "interactive"
+  ],
   "type": "module",
   "scripts": {
     "dev": "vite",
