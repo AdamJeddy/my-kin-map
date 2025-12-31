@@ -67,7 +67,11 @@ export async function initializeSettings(): Promise<Settings> {
 export async function loadSampleData(): Promise<void> {
   try {
     // Fetch the sample data
-    const response = await fetch('/test-data/sample-family.json');
+    const sampleDataUrl = new URL('../../test-data/sample-family.json', import.meta.url);
+    const response = await fetch(sampleDataUrl);
+    if (!response.ok) {
+      throw new Error('Sample data file could not be loaded');
+    }
     const data = await response.json();
 
     // Check if data already exists
