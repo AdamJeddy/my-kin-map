@@ -89,7 +89,6 @@ export function PersonEditor({ person, open, onOpenChange, onSaved }: PersonEdit
 
       if (current?.birthFamily) {
         const currentParents = [current.birthFamily.spouse1Id, current.birthFamily.spouse2Id].filter(Boolean) as string[];
-        const currentParentSet = new Set(currentParents);
         const sameParents = currentParents.length === desiredParents.length && currentParents.every(p => desiredParentSet.has(p));
 
         if (!sameParents && current.birthFamily.childIds.includes(savedPerson.id)) {

@@ -11,6 +11,7 @@ import {
   type NodeTypes,
   Panel,
 } from '@xyflow/react';
+import { PanOnScrollMode } from '@xyflow/system';
 import '@xyflow/react/dist/style.css';
 import { LayoutGrid, LayoutList, ZoomIn, ZoomOut, Maximize, Zap } from 'lucide-react';
 
@@ -210,7 +211,7 @@ function FamilyTreeViewInner({
         zoomOnPinch={true}
         panOnDrag={isMobile ? false : true}
         panOnScroll={isMobile}
-        panOnScrollMode="free"
+        panOnScrollMode={PanOnScrollMode.Free}
         selectionOnDrag={false}
         nodesDraggable={true}
         nodeDragThreshold={isMobile ? 0 : 10}
