@@ -14,6 +14,7 @@ import {
 import { PersonForm } from './PersonForm';
 import { useIsMobile } from '@/hooks';
 import { createPerson, updatePerson, updatePersonPhoto, usePersons, useFamilies, getPersonWithRelations, linkParentsToChild, linkSpouseAndChildren, removeChildFromFamily } from '@/db';
+import { useToast } from '@/hooks/useToast';
 import type { Person, PersonFormData } from '@/types';
 
 interface PersonEditorProps {
@@ -28,6 +29,7 @@ export function PersonEditor({ person, open, onOpenChange, onSaved }: PersonEdit
   const [isSubmitting, setIsSubmitting] = useState(false);
   const persons = usePersons();
   const families = useFamilies();
+  const { addToast } = useToast();
   const [relationSelections, setRelationSelections] = useState<{ parentIds: string[]; spouseId?: string; childIds: string[] }>({
     parentIds: [],
     spouseId: undefined,
@@ -118,12 +120,22 @@ export function PersonEditor({ person, open, onOpenChange, onSaved }: PersonEdit
       }
 
       onOpenChange(false);
+      addToast({
+        type: 'success',
+        title: 'Saved',
+        description: `${savedPerson.givenNames} ${savedPerson.surname} updated.`,
+        duration: 1500,
+      });
       if (onSaved) {
         onSaved(savedPerson);
       }
     } catch (error) {
       console.error('Failed to save person:', error);
-      // TODO: Show error toast
+      addToast({
+        type: 'error',
+        title: 'Save failed',
+        description: 'Could not update this person. Please try again.',
+      });
     } finally {
       setIsSubmitting(false);
     }
