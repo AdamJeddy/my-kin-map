@@ -1,4 +1,4 @@
-import { useCallback, useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 import {
   Dialog,
   DialogContent,
@@ -13,7 +13,7 @@ import {
 } from '@/components/ui';
 import { PersonForm } from './PersonForm';
 import { useIsMobile } from '@/hooks';
-import { createPerson, updatePerson, updatePersonPhoto } from '@/db';
+import { createPerson, updatePerson, updatePersonPhoto, usePersons, useFamilies, getPersonWithRelations, linkParentsToChild, linkSpouseAndChildren, removeChildFromFamily } from '@/db';
 import type { Person, PersonFormData } from '@/types';
 
 interface PersonEditorProps {
@@ -26,8 +26,32 @@ interface PersonEditorProps {
 export function PersonEditor({ person, open, onOpenChange, onSaved }: PersonEditorProps) {
   const isMobile = useIsMobile();
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const persons = usePersons();
+  const families = useFamilies();
+  const [relationSelections, setRelationSelections] = useState<{ parentIds: string[]; spouseId?: string; childIds: string[] }>({
+    parentIds: [],
+    spouseId: undefined,
+    childIds: [],
+  });
 
-  const handleSubmit = useCallback(async (data: PersonFormData, photo?: File) => {
+  // Load existing relations when editing a person
+  useEffect(() => {
+    if (!person) {
+      setRelationSelections({ parentIds: [], spouseId: undefined, childIds: [] });
+      return;
+    }
+
+    getPersonWithRelations(person.id).then((relations) => {
+      if (!relations) return;
+      setRelationSelections({
+        parentIds: relations.parents.map((p) => p.id).slice(0, 2),
+        spouseId: relations.spouses[0]?.id,
+        childIds: relations.children.map((c) => c.id),
+      });
+    });
+  }, [person]);
+
+  const handleSubmit = useCallback(async (data: PersonFormData, photo: File | undefined, relations: { parentIds: string[]; spouseId?: string; childIds: string[] }) => {
     setIsSubmitting(true);
     try {
       let savedPerson: Person;
@@ -52,6 +76,45 @@ export function PersonEditor({ person, open, onOpenChange, onSaved }: PersonEdit
           const photoBlob = new Blob([await photo.arrayBuffer()], { type: photo.type });
           await updatePersonPhoto(savedPerson.id, photoBlob, photoBlob);
         }
+      }
+
+      // Reconcile relationships after the person exists
+      const current = await getPersonWithRelations(savedPerson.id);
+
+      // Parents: if existing birth family differs from desired, remove and relink
+      const desiredParents = relations.parentIds.slice(0, 2);
+      const desiredParentSet = new Set(desiredParents);
+
+      if (current?.birthFamily) {
+        const currentParents = [current.birthFamily.spouse1Id, current.birthFamily.spouse2Id].filter(Boolean) as string[];
+        const currentParentSet = new Set(currentParents);
+        const sameParents = currentParents.length === desiredParents.length && currentParents.every(p => desiredParentSet.has(p));
+
+        if (!sameParents && current.birthFamily.childIds.includes(savedPerson.id)) {
+          await removeChildFromFamily(current.birthFamily.id, savedPerson.id);
+        }
+      }
+
+      if (desiredParents.length > 0) {
+        await linkParentsToChild(desiredParents, savedPerson.id);
+      }
+
+      // Spouse/children: remove children that are no longer selected from current spouse families
+      const desiredChildrenSet = new Set(relations.childIds);
+      if (current?.spouseFamilies) {
+        for (const fam of current.spouseFamilies) {
+          if (!fam.childIds || fam.childIds.length === 0) continue;
+          for (const childId of fam.childIds) {
+            if (!desiredChildrenSet.has(childId)) {
+              await removeChildFromFamily(fam.id, childId);
+            }
+          }
+        }
+      }
+
+      // Add missing children (and ensure spouse family exists)
+      if (relations.childIds.length > 0 || relations.spouseId) {
+        await linkSpouseAndChildren(savedPerson.id, relations.spouseId, relations.childIds);
       }
 
       onOpenChange(false);
@@ -87,6 +150,9 @@ export function PersonEditor({ person, open, onOpenChange, onSaved }: PersonEdit
           <div className="overflow-y-auto px-4 pb-4">
             <PersonForm
               person={person}
+              persons={persons ?? []}
+              families={families ?? []}
+              relations={relationSelections}
               onSubmit={handleSubmit}
               onCancel={handleCancel}
               isSubmitting={isSubmitting}
@@ -106,6 +172,9 @@ export function PersonEditor({ person, open, onOpenChange, onSaved }: PersonEdit
         </DialogHeader>
         <PersonForm
           person={person}
+          persons={persons ?? []}
+          families={families ?? []}
+          relations={relationSelections}
           onSubmit={handleSubmit}
           onCancel={handleCancel}
           isSubmitting={isSubmitting}

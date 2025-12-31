@@ -79,6 +79,12 @@ function FamilyTreeViewInner({
 
   const [nodes, setNodes, onNodesChange] = useNodesState(initialLayout.nodes);
   const [edges, setEdges, onEdgesChange] = useEdgesState(initialLayout.edges);
+  const positionsRef = useRef<Map<string, { x: number; y: number }>>(new Map());
+
+  // Track latest positions so we can preserve them across data updates
+  useEffect(() => {
+    positionsRef.current = new Map(nodes.map(n => [n.id, n.position]));
+  }, [nodes]);
 
   // Track previous orientation to detect changes
   const prevOrientationRef = useRef(orientation);
@@ -95,7 +101,12 @@ function FamilyTreeViewInner({
       prevOrientationRef.current = orientation;
       setTimeout(() => fitView({ padding: 0.2, duration: 500 }), 50);
     } else {
-      setNodes(injectHandlersIntoNodes(newLayout.nodes));
+      // Preserve existing node positions when data changes to avoid full layout shuffle
+      const preservedNodes = newLayout.nodes.map(node => {
+        const pos = positionsRef.current.get(node.id);
+        return pos ? { ...node, position: pos } : node;
+      });
+      setNodes(injectHandlersIntoNodes(preservedNodes));
       setEdges(newLayout.edges);
     }
   }, [persons, families, rootPersonId, orientation, isMobile, setNodes, setEdges, fitView, injectHandlersIntoNodes]);

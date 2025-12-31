@@ -198,8 +198,12 @@ export function generateTreeLayout(
     personId: string,
     x: number,
     y: number,
-    generation: number
+    generation: number,
+    visited: Set<string>
   ): number {
+    if (visited.has(personId)) return x;
+    visited.add(personId);
+
     const person = personMap.get(personId);
     if (!person || positioned.has(personId)) return x;
 
@@ -219,7 +223,8 @@ export function generateTreeLayout(
             orientation === 'vertical' 
               ? y + config.verticalSpacing 
               : y,
-            generation + 1
+            generation + 1,
+            visited
           );
           childPositions.push({ childId, x: currentX });
           currentX = childX + config.horizontalSpacing;
@@ -267,8 +272,12 @@ export function generateTreeLayout(
     personId: string,
     x: number,
     y: number,
-    generation: number
+    generation: number,
+    visited: Set<string>
   ): void {
+    if (visited.has(personId)) return;
+    visited.add(personId);
+
     const birthFamily = personToBirthFamily.get(personId);
     if (!birthFamily) return;
 
@@ -289,7 +298,7 @@ export function generateTreeLayout(
       createEdge(parentId, personId, 'parent-child');
 
       // Recursively layout grandparents
-      layoutAncestors(parentId, parentX, parentY, generation + 1);
+      layoutAncestors(parentId, parentX, parentY, generation + 1, visited);
     });
 
     // Create spouse edge between parents
@@ -303,10 +312,10 @@ export function generateTreeLayout(
   const startY = orientation === 'vertical' ? config.verticalSpacing * 2 : 0;
 
   // Layout descendants first
-  layoutDescendants(rootPerson.id, startX, startY, 0);
+  layoutDescendants(rootPerson.id, startX, startY, 0, new Set());
 
   // Then layout ancestors
-  layoutAncestors(rootPerson.id, startX, startY, 0);
+  layoutAncestors(rootPerson.id, startX, startY, 0, new Set());
 
   // Position any unconnected persons in a grid
   let unconnectedX = Math.max(...nodes.map(n => n.position.x), 0) + config.nodeWidth + config.horizontalSpacing * 2;

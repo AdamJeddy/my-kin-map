@@ -1,7 +1,7 @@
 import { useLiveQuery } from 'dexie-react-hooks';
 import { v4 as uuidv4 } from 'uuid';
 import { db, initializeSettings, DEFAULT_SETTINGS } from './schema';
-import type { Person, Family, FamilyTree, Settings, PersonFormData, FamilyFormData } from '@/types';
+import type { Person, Family, FamilyTree, Settings, PersonFormData, FamilyFormData, FamilyType } from '@/types';
 
 // ==================== PERSON HOOKS ====================
 
@@ -187,6 +187,51 @@ export async function removeChildFromFamily(familyId: string, childId: string): 
     _rev: uuidv4(),
     updatedAt: new Date()
   });
+}
+
+// Create or reuse a family between two spouses (order-insensitive)
+export async function getOrCreateFamily(spouseAId?: string, spouseBId?: string, type: FamilyType = 'unknown'): Promise<Family> {
+  const pair = [spouseAId, spouseBId].filter(Boolean) as string[];
+  if (pair.length === 0) {
+    throw new Error('At least one spouse is required to create a family');
+  }
+
+  const [a, b] = pair;
+
+  // Try to find an existing family with the same spouses (order agnostic)
+  const existing = (await db.families
+    .filter(f => !f._deleted &&
+      ((f.spouse1Id === a && f.spouse2Id === b) || (f.spouse1Id === b && f.spouse2Id === a)))
+    .toArray())[0];
+
+  if (existing) return existing;
+
+  return createFamily({
+    spouse1Id: a,
+    spouse2Id: b,
+    type,
+  });
+}
+
+// Ensure a child is linked to the given parents (one or two)
+export async function linkParentsToChild(parentIds: string[], childId: string): Promise<void> {
+  if (parentIds.length === 0) return;
+
+  const [first, second] = parentIds;
+  const family = await getOrCreateFamily(first, second);
+  await addChildToFamily(family.id, childId);
+}
+
+// Link a person to an optional spouse and children in one go
+export async function linkSpouseAndChildren(personId: string, spouseId?: string, childIds: string[] = []): Promise<void> {
+  if (!spouseId && childIds.length === 0) return; // Nothing to do
+
+  // If no spouse, create a single-parent family using personId
+  const family = await getOrCreateFamily(personId, spouseId);
+
+  for (const childId of childIds) {
+    await addChildToFamily(family.id, childId);
+  }
 }
 
 export async function deleteFamily(id: string, hard = false): Promise<void> {
