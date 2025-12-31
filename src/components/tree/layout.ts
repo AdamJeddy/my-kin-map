@@ -18,15 +18,15 @@ const LAYOUT_CONFIG: Record<'desktop' | 'mobile', LayoutConfig> = {
   desktop: {
     nodeWidth: 200, // Increased for couple nodes
     nodeHeight: 140, // Increased for couple nodes
-    horizontalSpacing: 100,
+    horizontalSpacing: 10,
     verticalSpacing: 160,
     spouseSpacing: 40,
   },
   mobile: {
     nodeWidth: 120, // Reduced for mobile
     nodeHeight: 80, // Reduced for mobile
-    horizontalSpacing: 40, // More compact
-    verticalSpacing: 80, // Reduced vertical spacing
+    horizontalSpacing: 10, // More compact
+    verticalSpacing: 100, // Reduced vertical spacing
     spouseSpacing: 15,
   },
 };
