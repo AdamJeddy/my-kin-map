@@ -49,7 +49,7 @@ function FamilyTreeViewInner({
   const isMobile = useIsMobile();
   const settings = useSettings();
   const orientation = settings?.layoutOrientation ?? 'vertical';
-  const { fitView } = useReactFlow();
+  const { fitView, zoomIn, zoomOut } = useReactFlow();
 
   // Inject click handlers into couple nodes
   const injectHandlersIntoNodes = useCallback((nodes: any[]) => {
@@ -135,6 +135,18 @@ function FamilyTreeViewInner({
     setNodes((currentNodes) => autoLayoutTree(currentNodes, edges, orientation, isMobile));
     setTimeout(() => fitView({ padding: 0.2, duration: 500 }), 50);
   }, [edges, orientation, isMobile, setNodes, fitView]);
+
+  const handleZoomIn = useCallback(() => {
+    zoomIn();
+  }, [zoomIn]);
+
+  const handleZoomOut = useCallback(() => {
+    zoomOut();
+  }, [zoomOut]);
+
+  const handleZoomFit = useCallback(() => {
+    fitView({ padding: 0.2, duration: 300 });
+  }, [fitView]);
 
   // Node click handlers
   const handleNodeClick = useCallback(
@@ -259,13 +271,13 @@ function FamilyTreeViewInner({
         {/* Mobile zoom controls */}
         {isMobile && (
           <Panel position="bottom-right" className="flex flex-col gap-2 mb-20">
-            <Button variant="outline" size="icon" className="h-10 w-10">
+            <Button variant="outline" size="icon" className="h-10 w-10" onClick={handleZoomIn} title="Zoom in">
               <ZoomIn className="h-5 w-5" />
             </Button>
-            <Button variant="outline" size="icon" className="h-10 w-10">
+            <Button variant="outline" size="icon" className="h-10 w-10" onClick={handleZoomOut} title="Zoom out">
               <ZoomOut className="h-5 w-5" />
             </Button>
-            <Button variant="outline" size="icon" className="h-10 w-10">
+            <Button variant="outline" size="icon" className="h-10 w-10" onClick={handleZoomFit} title="Fit to view">
               <Maximize className="h-5 w-5" />
             </Button>
           </Panel>
