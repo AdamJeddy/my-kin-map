@@ -171,6 +171,7 @@ function FamilyTreeViewInner({
   return (
     <div className="w-full h-full">
       <ReactFlow
+        style={{ touchAction: 'none' }}
         nodes={nodes}
         edges={edges}
         onNodesChange={onNodesChange}
@@ -184,10 +185,12 @@ function FamilyTreeViewInner({
         minZoom={0.1}
         maxZoom={2}
         zoomOnPinch={true}
-        panOnDrag={true}
+        panOnDrag={isMobile ? false : true}
+        panOnScroll={isMobile}
+        panOnScrollMode="free"
         selectionOnDrag={false}
-        nodesDraggable={!isMobile}
-        nodeDragThreshold={10}
+        nodesDraggable={true}
+        nodeDragThreshold={isMobile ? 0 : 10}
         elementsSelectable={true}
         nodesConnectable={false}
         aria-label="Family tree visualization"
